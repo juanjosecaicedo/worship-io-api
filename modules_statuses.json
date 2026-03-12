@@ -1,0 +1,10 @@
+{
+    "User": true,
+    "Group": true,
+    "GlobalSong": true,
+    "Song": true,
+    "Event": true,
+    "Setlist": true,
+    "Subscription": true,
+    "Notification": true
+}
