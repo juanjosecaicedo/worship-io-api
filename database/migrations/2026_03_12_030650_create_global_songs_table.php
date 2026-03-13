@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('global_songs', function (Blueprint $table) {
             $table->id()->comment('Unique identifier for the song');
+
             $table->string('title')->comment('e.g., Oceans, Reckless Love');
             $table->string('author')->comment('e.g., Hillsong United, Bethel Music');
             $table->string('original_key')->comment('e.g., C, G, Am, Bb');
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->string('youtube_url')->nullable()->comment('YouTube URL');
             $table->string('spotify_url')->nullable()->comment('Spotify URL');
             $table->boolean('is_active')->default(true)->comment('Active status of the song');
-            $table->foreignId('created_by')->nullable()->comment('FK users (NULL = system)')->constrained('users');
+            $table->foreignId('created_by')->nullable()->comment('FK users (NULL = system)')->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
 
@@ -45,8 +46,9 @@ return new class extends Migration
             $table->string('label')->comment('e.g., Verse 1, Chorus, Bridge');
             $table->text('lyrics')->comment('Section lyrics');
             $table->json('chords')->comment('JSON: [{"beat":1,"chord":"C"},{"beat":3,"chord":"Am"}]');
-            $table->unsignedInteger('order')->default(0)->comment('Position in the song');
+            $table->tinyInteger('order')->unsigned()->default(0)->comment('Position in the song');
             $table->timestamps();
+            $table->index('global_song_id');
         });
     }
 

@@ -74,4 +74,16 @@ class User extends Authenticatable
             ->withPivot('role', 'instrument')
             ->withTimestamps();
     }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)
+            ->whereIn('status', ['active', 'trialing'])
+            ->latest();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

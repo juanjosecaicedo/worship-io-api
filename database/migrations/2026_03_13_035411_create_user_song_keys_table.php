@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('group_song_id')->constrained('group_songs')->onDelete('cascade');
-            $table->string('preferred_key')->comment('e.g., C, G, Am, Bb');
+            $table->string('preferred_key', 5)->comment('e.g., C, G, Am, Bb');
             $table->integer('capo')->default(0)->comment('Capo position');
             $table->string('notes')->nullable()->comment('For example: A half a tone down looks better on me.');
-            $table->unique(['user_id', 'group_song_id']);
             $table->timestamps();
+            $table->unique(['user_id', 'group_song_id']);
         });
     }
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('group_song_id')->constrained('group_songs')->onDelete('cascade');
-            $table->foreignId('section_id')->constrained('group_song_sections')->onDelete('cascade');
+            $table->foreignId('section_id')->nullable()->constrained('group_song_sections')->nullOnDelete();
             $table->enum('type', [
                 'intro',
                 'verse',

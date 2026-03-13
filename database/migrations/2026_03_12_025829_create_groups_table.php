@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('avatar')->nullable();
+            $table->foreignId('created_by')->constrained('users')->restrictOnDelete();
+            $table->string('name', 100);
+            $table->text('description')->nullable();
+            $table->string('color', 7)->default('#6366F1');
+            $table->text('avatar')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->foreignId('group_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('role', ['admin', 'leader', 'vocalist', 'musician', 'choir', 'instrument', 'technician'])->default('vocalist');
+            $table->string('instrument', 50)->nullable();
             $table->date('joined_at')->nullable();
             $table->unique(['group_id', 'user_id']);
             $table->timestamps();

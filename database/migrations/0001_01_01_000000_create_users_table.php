@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('username')->unique();
-            $table->string('avatar')->nullable();
+            $table->text('avatar')->nullable();
             $table->string('phone')->nullable();
             $table->string('password');
             $table->text('fcm_token')->nullable()->comment('Firebase Cloud Messaging token');

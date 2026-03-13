@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('group_id')->constrained('groups')->onDelete('cascade');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->enum('type', ['service', 'rehearsal', 'concert', 'meeting', 'other'])->default('service');
             $table->text('description')->nullable();
@@ -23,7 +24,6 @@ return new class extends Migration
             $table->enum('status', ['scheduled', 'in_progress', 'completed', 'cancelled', 'postponed'])->default('scheduled');
             $table->text('gcal_event_id')->nullable();
             $table->string('color')->default('#459315');
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -31,8 +31,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('role', ['band_director', 'vocalist', 'choir', 'musician', 'instrument', 'technician'])->default('vocalist');
-            $table->unique(['event_id', 'user_id']);
+            $table->enum('role', [
+                'band_director',
+                'vocalist',
+                'choir',
+                'musician',
+                'technician'
+            ])->default('vocalist');
+            $table->string('notes', 255)->nullable();
+            $table->unique(['event_id', 'user_id', 'role']);
             $table->timestamps();
         });
 
@@ -41,8 +48,9 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['confirmed', 'pending', 'declined', 'attended', 'absent'])->default('pending');
-            $table->text('notes')->nullable();
+            $table->string('notes', 255)->nullable();
             $table->unique(['event_id', 'user_id']);
+            $table->index('event_id');
             $table->timestamps();
         });
     }

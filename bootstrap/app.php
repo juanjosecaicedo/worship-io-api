@@ -10,13 +10,16 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         channels: __DIR__ . '/../routes/channels.php',
         health: '/up',
+        api: __DIR__ . '/../routes/api.php',
     )
     ->withBroadcasting(
         __DIR__ . '/../routes/channels.php',
         ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']],
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'check.subscription.feature' => \App\Http\Middleware\CheckSubscriptionFeature::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
