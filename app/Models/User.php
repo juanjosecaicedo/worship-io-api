@@ -24,6 +24,10 @@ class User extends Authenticatable
         'email',
         'username',
         'phone',
+        'google_calendar_token',
+        'fcm_token',
+        'is_active',
+        'last_login_at',
         'password',
     ];
 
@@ -35,6 +39,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google_calendar_token'
     ];
 
     /**
@@ -46,7 +51,27 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'last_login_at'     => 'datetime',
+            'google_calendar_token' => 'array',
+            'is_active'         => 'boolean',
+            'password'          => 'hashed',
         ];
+    }
+
+    public function vocalProfile()
+    {
+        return $this->hasOne(UserVocalProfile::class);
+    }
+
+    public function groupMembers()
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members')
+            ->withPivot('role', 'instrument')
+            ->withTimestamps();
     }
 }

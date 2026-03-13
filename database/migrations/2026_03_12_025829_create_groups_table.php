@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('role', ['admin', 'leader', 'vocalist', 'musician', 'choir', 'instrument', 'technician'])->default('vocalist');
             $table->date('joined_at')->nullable();
+            $table->unique(['group_id', 'user_id']);
             $table->timestamps();
         });
     }
@@ -36,6 +37,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('group_members');
         Schema::dropIfExists('groups');
     }
 };

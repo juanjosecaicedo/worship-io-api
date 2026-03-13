@@ -32,13 +32,20 @@ return new class extends Migration
             $table->id()->comment('Unique identifier for the section');
             $table->foreignId('global_song_id')->comment('FK global_songs')->constrained('global_songs')->onDelete('cascade');
             $table->enum('type', [
-                'intro', 'verse', 'pre_chorus', 'chorus', 'bridge', 
-                'outro', 'instrumental', 'tag', 'vamp'
+                'intro',
+                'verse',
+                'pre_chorus',
+                'chorus',
+                'bridge',
+                'outro',
+                'instrumental',
+                'tag',
+                'vamp'
             ])->comment('Section type');
             $table->string('label')->comment('e.g., Verse 1, Chorus, Bridge');
             $table->text('lyrics')->comment('Section lyrics');
             $table->json('chords')->comment('JSON: [{"beat":1,"chord":"C"},{"beat":3,"chord":"Am"}]');
-            $table->unsignedInteger('order')->comment('Position in the song');
+            $table->unsignedInteger('order')->default(0)->comment('Position in the song');
             $table->timestamps();
         });
     }
