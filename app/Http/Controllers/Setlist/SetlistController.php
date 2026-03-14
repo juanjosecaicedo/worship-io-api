@@ -14,13 +14,8 @@ use Illuminate\Http\Request;
 
 class SetlistController extends Controller
 {
-
     /**
      * List setlists for the event
-     * @param Request $request
-     * @param Group $group
-     * @param Event $event
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request, Group $group, Event $event): JsonResponse
     {
@@ -37,13 +32,8 @@ class SetlistController extends Controller
         ]);
     }
 
-
     /**
      * Create setlist for the event
-     * @param CreateSetlistRequest $request
-     * @param Group $group
-     * @param Event $event
-     * @return JsonResponse
      */
     public function store(CreateSetlistRequest $request, Group $group, Event $event): JsonResponse
     {
@@ -52,23 +42,18 @@ class SetlistController extends Controller
 
         $setlist = Setlist::create([
             ...$request->validated(),
-            'event_id'   => $event->id,
+            'event_id' => $event->id,
             'created_by' => $request->user()->id,
         ]);
 
         return response()->json([
-            'message' => 'Setlist creado correctamente.',
-            'data'    => new SetlistResource($setlist->load('creator')),
+            'message' => 'Setlist created successfully.',
+            'data' => new SetlistResource($setlist->load('creator')),
         ], 201);
     }
 
     /**
      * See the full setlist with all songs and vocalists
-     * @param Request $request
-     * @param Group $group
-     * @param Event $event
-     * @param Setlist $setlist
-     * @return JsonResponse
      */
     public function show(Request $request, Group $group, Event $event, Setlist $setlist): JsonResponse
     {
@@ -89,11 +74,6 @@ class SetlistController extends Controller
 
     /**
      * Update setlist
-     * @param UpdateSetlistRequest $request
-     * @param Group $group
-     * @param Event $event
-     * @param Setlist $setlist
-     * @return JsonResponse
      */
     public function update(UpdateSetlistRequest $request, Group $group, Event $event, Setlist $setlist): JsonResponse
     {
@@ -104,18 +84,13 @@ class SetlistController extends Controller
         $setlist->update($request->validated());
 
         return response()->json([
-            'message' => 'Setlist actualizado correctamente.',
-            'data'    => new SetlistResource($setlist->fresh('creator')),
+            'message' => 'Setlist updated successfully.',
+            'data' => new SetlistResource($setlist->fresh('creator')),
         ]);
     }
 
     /**
      * Delete setlist
-     * @param Request $request
-     * @param Group $group
-     * @param Event $event
-     * @param Setlist $setlist
-     * @return JsonResponse
      */
     public function destroy(Request $request, Group $group, Event $event, Setlist $setlist): JsonResponse
     {
@@ -126,7 +101,7 @@ class SetlistController extends Controller
         $setlist->delete();
 
         return response()->json([
-            'message' => 'Setlist eliminado correctamente.',
+            'message' => 'Setlist deleted successfully.',
         ]);
     }
 }

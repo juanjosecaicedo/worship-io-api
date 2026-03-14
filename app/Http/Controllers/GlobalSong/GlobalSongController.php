@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 
 class GlobalSongController extends Controller
 {
-
+    /**
+     * Get all global songs
+     */
     public function index(GlobalSongFilterRequest $request): JsonResponse
     {
         $query = GlobalSong::active()->withCount('sections');
@@ -40,13 +42,16 @@ class GlobalSongController extends Controller
             'data' => GlobalSongResource::collection($songs),
             'meta' => [
                 'current_page' => $songs->currentPage(),
-                'last_page'    => $songs->lastPage(),
-                'per_page'     => $songs->perPage(),
-                'total'        => $songs->total(),
+                'last_page' => $songs->lastPage(),
+                'per_page' => $songs->perPage(),
+                'total' => $songs->total(),
             ],
         ]);
     }
 
+    /**
+     * Create a new global song
+     */
     public function store(CreateGlobalSongRequest $request): JsonResponse
     {
         $song = GlobalSong::create([
@@ -62,11 +67,14 @@ class GlobalSongController extends Controller
         }
 
         return response()->json([
-            'message' => 'Canción agregada a la librería global.',
-            'data'    => new GlobalSongResource($song->load('sections', 'creator')),
+            'message' => 'Song added to the global library.',
+            'data' => new GlobalSongResource($song->load('sections', 'creator')),
         ], 201);
     }
 
+    /**
+     * Get a global song by ID
+     */
     public function show(GlobalSong $globalSong): JsonResponse
     {
         $globalSong->load(['sections', 'creator']);
@@ -76,35 +84,41 @@ class GlobalSongController extends Controller
         ]);
     }
 
+    /**
+     * Update a global song
+     */
     public function update(UpdateGlobalSongRequest $request, GlobalSong $globalSong): JsonResponse
     {
-        // Solo el creador puede editar
+        // Only the creator can edit
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede editar esta canción.'
+            'Only the creator can edit this song.'
         );
 
         $globalSong->update($request->validated());
 
         return response()->json([
-            'message' => 'Canción actualizada correctamente.',
-            'data'    => new GlobalSongResource($globalSong->load('sections')),
+            'message' => 'Song updated successfully.',
+            'data' => new GlobalSongResource($globalSong->load('sections')),
         ]);
     }
 
+    /**
+     * Delete a global song
+     */
     public function destroy(Request $request, GlobalSong $globalSong): JsonResponse
     {
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede eliminar esta canción.'
+            'Only the creator can delete this song.'
         );
 
         $globalSong->update(['is_active' => false]);
 
         return response()->json([
-            'message' => 'Canción eliminada de la librería global.',
+            'message' => 'Song deleted from the global library.',
         ]);
     }
 }

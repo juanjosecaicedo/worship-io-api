@@ -9,6 +9,9 @@ use Illuminate\Http\JsonResponse;
 
 class PlanController extends Controller
 {
+    /**
+     * Get all active subscription plans
+     */
     public function index(): JsonResponse
     {
         $plans = SubscriptionPlan::where('is_active', true)
@@ -21,6 +24,9 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * Get a specific subscription plan
+     */
     public function show(SubscriptionPlan $plan): JsonResponse
     {
         $plan->load('features');

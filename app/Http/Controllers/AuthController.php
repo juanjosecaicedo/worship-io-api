@@ -14,6 +14,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user
+     * @unauthenticated
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
@@ -27,25 +33,31 @@ class AuthController extends Controller
         $token = $user->createToken($request->device_name ?? 'worship-io-app')->plainTextToken;
 
         return response()->json([
-            'message' => 'Usuario registrado correctamente.',
+            'message' => 'Successfully registered user.',
             'data' => new UserResource($user),
             'token' => $token,
         ], 201);
     }
 
+    /**
+     * Login a user
+     * @unauthenticated
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Las credenciales son incorrectas.'],
+                'email' => ['The credentials are incorrect.'],
             ]);
         }
 
         if (! $user->is_active) {
             return response()->json([
-                'message' => 'Tu cuenta está desactivada. Contacta al administrador.',
+                'message' => 'Your account is deactivated. Contact the administrator.',
             ], 403);
         }
 
@@ -58,12 +70,17 @@ class AuthController extends Controller
         $token = $user->createToken($request->device_name ?? 'worship-io-app')->plainTextToken;
 
         return response()->json([
-            'message' => 'Sesión iniciada correctamente.',
+            'message' => 'Successfully logged in.',
             'data' => new UserResource($user),
             'token' => $token,
         ]);
     }
 
+    /**
+     * Logout a user
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function logout(Request $request): JsonResponse
     {
         $token = $request->user()->currentAccessToken();
@@ -73,10 +90,13 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Sesión cerrada correctamente.',
+            'message' => 'Successfully logged out.',
         ]);
     }
 
+    /**
+     * Get current user
+     */
     public function me(Request $request): JsonResponse
     {
         return response()->json([

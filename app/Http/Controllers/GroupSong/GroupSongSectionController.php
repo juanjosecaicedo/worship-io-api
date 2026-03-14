@@ -14,13 +14,8 @@ use Illuminate\Http\Request;
 
 class GroupSongSectionController extends Controller
 {
-
     /**
      * Add section to song by the group
-     * @param CreateSectionRequest $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function store(CreateSectionRequest $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -30,18 +25,13 @@ class GroupSongSectionController extends Controller
         $section = $groupSong->sections()->create($request->validated());
 
         return response()->json([
-            'message' => 'Sección agregada correctamente.',
-            'data'    => new GroupSongSectionResource($section),
+            'message' => 'Section added successfully.',
+            'data' => new GroupSongSectionResource($section),
         ], 201);
     }
 
     /**
      * Update a section of a song by the group
-     * @param CreateSectionRequest $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @param GroupSongSection $section
-     * @return JsonResponse
      */
     public function update(CreateSectionRequest $request, Group $group, GroupSong $groupSong, GroupSongSection $section): JsonResponse
     {
@@ -52,17 +42,13 @@ class GroupSongSectionController extends Controller
         $section->update($request->validated());
 
         return response()->json([
-            'message' => 'Sección actualizada correctamente.',
-            'data'    => new GroupSongSectionResource($section),
+            'message' => 'Section updated successfully.',
+            'data' => new GroupSongSectionResource($section),
         ]);
     }
 
     /**
      * Reorder sections of a song by the group
-     * @param ReorderSectionsRequest $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function reorder(
         ReorderSectionsRequest $request,
@@ -79,8 +65,8 @@ class GroupSongSectionController extends Controller
         }
 
         return response()->json([
-            'message' => 'Secciones reordenadas correctamente.',
-            'data'    => GroupSongSectionResource::collection(
+            'message' => 'Sections reordered successfully.',
+            'data' => GroupSongSectionResource::collection(
                 $groupSong->sections()->get()
             ),
         ]);
@@ -88,11 +74,6 @@ class GroupSongSectionController extends Controller
 
     /**
      * Delete a section of a song by the group
-     * @param Request $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @param GroupSongSection $section
-     * @return JsonResponse
      */
     public function destroy(Request $request, Group $group, GroupSong $groupSong, GroupSongSection $section): JsonResponse
     {
@@ -103,7 +84,7 @@ class GroupSongSectionController extends Controller
         $section->delete();
 
         return response()->json([
-            'message' => 'Sección eliminada correctamente.',
+            'message' => 'Section deleted successfully.',
         ]);
     }
 }

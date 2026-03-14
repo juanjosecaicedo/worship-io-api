@@ -17,8 +17,6 @@ class SubscriptionController extends Controller
 
     /**
      * View user's active subscription
-     * @param Request $request
-     * @return JsonResponse
      */
     public function show(Request $request): JsonResponse
     {
@@ -29,8 +27,8 @@ class SubscriptionController extends Controller
 
         if (! $subscription) {
             return response()->json([
-                'message' => 'No tienes una suscripción activa.',
-                'data'    => null,
+                'message' => 'You do not have an active subscription.',
+                'data' => null,
             ]);
         }
 
@@ -41,8 +39,6 @@ class SubscriptionController extends Controller
 
     /**
      * Subscribe to a plan
-     * @param CreateSubscriptionRequest $request
-     * @return JsonResponse
      */
     public function store(CreateSubscriptionRequest $request): JsonResponse
     {
@@ -50,12 +46,12 @@ class SubscriptionController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Si ya tiene subscripción activa al mismo plan
+        // If the user already has an active subscription to the same plan
         $current = $request->user()->activeSubscription()->first();
 
         if ($current && $current->plan_id === $plan->id) {
             return response()->json([
-                'message' => 'Ya tienes una suscripción activa en este plan.',
+                'message' => 'You already have an active subscription to this plan.',
             ], 409);
         }
 
@@ -66,22 +62,19 @@ class SubscriptionController extends Controller
         );
 
         return response()->json([
-            'message' => 'Suscripción creada correctamente.',
-            'data'    => new SubscriptionResource($subscription->load('plan.features')),
+            'message' => 'Subscription created successfully.',
+            'data' => new SubscriptionResource($subscription->load('plan.features')),
         ], 201);
     }
 
-
     /**
      * Change plan (upgrade/downgrade)
-     * @param ChangePlanRequest $request
-     * @return JsonResponse
      */
     public function changePlan(ChangePlanRequest $request): JsonResponse
     {
         $subscription = $request->user()->activeSubscription()->first();
 
-        abort_unless(!$subscription, 404, 'No tienes una suscripción activa.');
+        abort_unless(! $subscription, 404, 'You do not have an active subscription.');
 
         $newPlan = SubscriptionPlan::where('slug', $request->plan_slug)
             ->where('is_active', true)
@@ -90,29 +83,26 @@ class SubscriptionController extends Controller
         $subscription = $this->service->changePlan($subscription, $newPlan);
 
         return response()->json([
-            'message' => 'Plan actualizado correctamente.',
-            'data'    => new SubscriptionResource($subscription->load('plan.features')),
+            'message' => 'Plan updated successfully.',
+            'data' => new SubscriptionResource($subscription->load('plan.features')),
         ]);
     }
 
-
     /**
      * Cancel subscription
-     * @param Request $request
-     * @return JsonResponse
      */
     public function cancel(Request $request): JsonResponse
     {
         $subscription = $request->user()->activeSubscription()->first();
 
-        abort_unless(!$subscription, 404, 'No tienes una suscripción activa.');
-        abort_if($subscription->plan->price === 0, 422, 'El plan gratuito no se puede cancelar.');
+        abort_unless(! $subscription, 404, 'You do not have an active subscription.');
+        abort_if($subscription->plan->price === 0, 422, 'The free plan cannot be canceled.');
 
         $subscription = $this->service->cancel($subscription);
 
         return response()->json([
-            'message' => 'Suscripción cancelada. Tendrás acceso hasta el final del período.',
-            'data'    => new SubscriptionResource($subscription),
+            'message' => 'Subscription canceled. You will have access until the end of the period.',
+            'data' => new SubscriptionResource($subscription),
         ]);
     }
 }

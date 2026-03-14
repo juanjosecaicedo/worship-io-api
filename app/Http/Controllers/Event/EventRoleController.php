@@ -13,19 +13,22 @@ use Illuminate\Http\Request;
 
 class EventRoleController extends Controller
 {
+    /**
+     * Assign a role to a user in an event
+     */
     public function store(AssignRoleRequest $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
         abort_if($event->group_id !== $group->id, 404);
 
-        // Verificar que el usuario es miembro del grupo
+        // Verify that the user is a member of the group
         abort_unless(
             $group->hasMember($request->user_id),
             422,
-            'El usuario no es miembro de este grupo.'
+            'The user is not a member of this group.'
         );
 
-        // Solo puede haber 1 director de banda por evento
+        // Only one band director per event is allowed
         if ($request->role === 'band_director') {
             $exists = $event->roles()
                 ->where('role', 'band_director')
@@ -33,12 +36,12 @@ class EventRoleController extends Controller
 
             if ($exists) {
                 return response()->json([
-                    'message' => 'Ya hay un director de banda asignado a este evento.',
+                    'message' => 'A band director has already been assigned to this event.',
                 ], 409);
             }
         }
 
-        // Verificar que no tenga el mismo rol duplicado
+        // Verify that the user does not have the same role duplicated
         $exists = $event->roles()
             ->where('user_id', $request->user_id)
             ->where('role', $request->role)
@@ -46,18 +49,21 @@ class EventRoleController extends Controller
 
         if ($exists) {
             return response()->json([
-                'message' => 'Este usuario ya tiene este rol en el evento.',
+                'message' => 'This user already has this role in the event.',
             ], 409);
         }
 
         $role = $event->roles()->create($request->validated());
 
         return response()->json([
-            'message' => 'Rol asignado correctamente.',
-            'data'    => new EventRoleResource($role->load('user')),
+            'message' => 'Role assigned successfully.',
+            'data' => new EventRoleResource($role->load('user')),
         ], 201);
     }
 
+    /**
+     * Update a role in an event
+     */
     public function update(Request $request, Group $group, Event $event, EventRole $role): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
@@ -71,21 +77,24 @@ class EventRoleController extends Controller
         $role->update(['notes' => $request->notes]);
 
         return response()->json([
-            'message' => 'Rol actualizado correctamente.',
-            'data'    => new EventRoleResource($role->load('user')),
+            'message' => 'Role updated successfully.',
+            'data' => new EventRoleResource($role->load('user')),
         ]);
     }
 
+    /**
+     * Remove a role from a user in an event
+     */
     public function destroy(Request $request, Group $group, Event $event, EventRole $role): JsonResponse
     {
-        abort_unless($group->isAdminOrLeader($request->user()->id), 403);
+        abort_unless($group->isAdminOrLeader($request->user()->id), 403, '');
         abort_if($event->group_id !== $group->id, 404);
         abort_if($role->event_id !== $event->id, 404);
 
         $role->delete();
 
         return response()->json([
-            'message' => 'Rol eliminado del evento correctamente.',
+            'message' => 'Role removed successfully.',
         ]);
     }
 }

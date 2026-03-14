@@ -11,7 +11,9 @@ use App\Policies\EventPolicy;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\GroupPolicy;
-
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +35,12 @@ class AppServiceProvider extends ServiceProvider
 
         Event::observe(EventObserver::class);
         GroupMember::observe(GroupMemberObserver::class);
+
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->secure(
+                    SecurityScheme::http('bearer')
+                );
+            });
     }
 }

@@ -15,14 +15,14 @@ class EventAttendeeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'           => $this->id,
-            'status'       => $this->status,
-            'notes'        => $this->notes,
+            'id' => $this->id,
+            'status' => $this->status,
+            'notes' => $this->notes,
+            /** @format date-time */
             'responded_at' => $this->responded_at?->toDateTimeString(),
-            'user'         => $this->whenLoaded(
+            'user' => $this->whenLoaded(
                 'user',
-                fn() =>
-                new UserResource($this->user)
+                fn () => new UserResource($this->user)
             ),
         ];
     }

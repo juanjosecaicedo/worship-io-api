@@ -12,10 +12,13 @@ use Illuminate\Http\Request;
 
 class EventAttendeeController extends Controller
 {
+    /**
+     * List all attendees of an event
+     */
     public function index(Request $request, Group $group, Event $event): JsonResponse
     {
-        abort_unless($group->hasMember($request->user()->id), 403);
-        abort_if($event->group_id !== $group->id, 404);
+        abort_unless($group->hasMember($request->user()->id), 403, 'No tienes permiso para acceder a este grupo');
+        abort_if($event->group_id !== $group->id, 404, 'El evento no pertenece al grupo');
 
         $attendees = $event->attendees()
             ->with('user')
@@ -25,20 +28,16 @@ class EventAttendeeController extends Controller
         return response()->json([
             'data' => [
                 'confirmed' => EventAttendeeResource::collection($attendees->get('confirmed', collect())),
-                'pending'   => EventAttendeeResource::collection($attendees->get('pending', collect())),
-                'declined'  => EventAttendeeResource::collection($attendees->get('declined', collect())),
-                'attended'  => EventAttendeeResource::collection($attendees->get('attended', collect())),
-                'absent'    => EventAttendeeResource::collection($attendees->get('absent', collect())),
+                'pending' => EventAttendeeResource::collection($attendees->get('pending', collect())),
+                'declined' => EventAttendeeResource::collection($attendees->get('declined', collect())),
+                'attended' => EventAttendeeResource::collection($attendees->get('attended', collect())),
+                'absent' => EventAttendeeResource::collection($attendees->get('absent', collect())),
             ],
         ]);
     }
 
     /**
      * respond to invitation (user confirms or declines)
-     * @param RespondAttendanceRequest $request
-     * @param Group $group
-     * @param Event $event
-     * @return JsonResponse
      */
     public function respond(RespondAttendanceRequest $request, Group $group, Event $event): JsonResponse
     {
@@ -50,23 +49,19 @@ class EventAttendeeController extends Controller
             ->firstOrFail();
 
         $attendee->update([
-            'status'       => $request->status,
-            'notes'        => $request->notes,
+            'status' => $request->status,
+            'notes' => $request->notes,
             'responded_at' => now(),
         ]);
 
         return response()->json([
             'message' => 'Respuesta registrada correctamente.',
-            'data'    => new EventAttendeeResource($attendee),
+            'data' => new EventAttendeeResource($attendee),
         ]);
     }
 
     /**
      * Mark actual attendance (post-event) — admin/leader only
-     * @param Request $request
-     * @param Group $group
-     * @param Event $event
-     * @return JsonResponse
      */
     public function markAttendance(Request $request, Group $group, Event $event): JsonResponse
     {
@@ -74,8 +69,8 @@ class EventAttendeeController extends Controller
         abort_if($event->group_id !== $group->id, 404);
 
         $request->validate([
-            'attendances'            => ['required', 'array'],
-            'attendances.*.user_id'  => ['required', 'exists:users,id'],
+            'attendances' => ['required', 'array'],
+            'attendances.*.user_id' => ['required', 'exists:users,id'],
             'attendances.*.attended' => ['required', 'boolean'],
         ]);
 

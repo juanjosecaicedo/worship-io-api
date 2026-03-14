@@ -15,12 +15,18 @@ class VocalProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'              => $this->id,
-            'voice_type'      => $this->voice_type,
+            /** @var int $id */
+            'id' => $this->id,
+            /** @var string $voice_type */
+            'voice_type' => $this->voice_type,
+            /** @var string $comfortable_key */
             'comfortable_key' => $this->comfortable_key,
-            'range_min'       => $this->range_min,
-            'range_max'       => $this->range_max,
-            'notes'           => $this->notes,
+            /** @var int $range_min */
+            'range_min' => $this->range_min,
+            /** @var int $range_max */
+            'range_max' => $this->range_max,
+            /** @var string $notes */
+            'notes' => $this->notes,
         ];
     }
 }

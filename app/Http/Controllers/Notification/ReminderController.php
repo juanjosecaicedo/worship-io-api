@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 
 class ReminderController extends Controller
 {
-    // Listar recordatorios de un evento
+    /**
+     * List reminders for an event
+     */
     public function index(Request $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
@@ -24,12 +26,14 @@ class ReminderController extends Controller
             ->get();
 
         return response()->json([
-            'data'    => ReminderResource::collection($reminders),
+            'data' => ReminderResource::collection($reminders),
             'presets' => Reminder::PRESET_OPTIONS,
         ]);
     }
 
-    // Crear recordatorio para un evento
+    /**
+     * Create a reminder for an event
+     */
     public function store(CreateReminderRequest $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
@@ -61,11 +65,13 @@ class ReminderController extends Controller
 
         return response()->json([
             'message' => 'Recordatorio creado correctamente.',
-            'data'    => new ReminderResource($reminder),
+            'data' => new ReminderResource($reminder),
         ], 201);
     }
 
-    // Eliminar recordatorio
+    /**
+     * Delete a reminder
+     */
     public function destroy(Request $request, Group $group, Event $event, Reminder $reminder): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);

@@ -12,13 +12,8 @@ use Illuminate\Http\Request;
 
 class UserSongKeyController extends Controller
 {
-
     /**
      * See my preferred ringtone for this song
-     * @param Request $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function show(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -36,10 +31,6 @@ class UserSongKeyController extends Controller
 
     /**
      * Create or update my favorite ringtone
-     * @param StoreUserSongKeyRequest $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function upsert(StoreUserSongKeyRequest $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -52,17 +43,13 @@ class UserSongKeyController extends Controller
         );
 
         return response()->json([
-            'message' => 'Tono preferido guardado correctamente.',
-            'data'    => new UserSongKeyResource($key),
+            'message' => 'Favorite ringtone saved successfully.',
+            'data' => new UserSongKeyResource($key),
         ]);
     }
 
     /**
      * Delete my favorite ringtone
-     * @param Request $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function destroy(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -74,7 +61,7 @@ class UserSongKeyController extends Controller
             ->delete();
 
         return response()->json([
-            'message' => 'Tono preferido eliminado correctamente.',
+            'message' => 'Favorite ringtone deleted successfully.',
         ]);
     }
 }

@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    /**
+     * List all events of a group
+     */
     public function index(Request $request, Group $group): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
@@ -49,20 +52,23 @@ class EventController extends Controller
             'data' => EventResource::collection($events),
             'meta' => [
                 'current_page' => $events->currentPage(),
-                'last_page'    => $events->lastPage(),
-                'per_page'     => $events->perPage(),
-                'total'        => $events->total(),
+                'last_page' => $events->lastPage(),
+                'per_page' => $events->perPage(),
+                'total' => $events->total(),
             ],
         ]);
     }
 
+    /**
+     * Create a new event
+     */
     public function store(CreateEventRequest $request, Group $group): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
 
         $event = Event::create([
             ...$request->validated(),
-            'group_id'   => $group->id,
+            'group_id' => $group->id,
             'created_by' => $request->user()->id,
         ]);
 
@@ -71,10 +77,10 @@ class EventController extends Controller
             ->where('is_active', true)
             ->pluck('user_id');
 
-        $attendees = $memberIds->map(fn($userId) => [
-            'event_id'   => $event->id,
-            'user_id'    => $userId,
-            'status'     => 'pending',
+        $attendees = $memberIds->map(fn ($userId) => [
+            'event_id' => $event->id,
+            'user_id' => $userId,
+            'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
         ])->toArray();
@@ -83,10 +89,13 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Evento creado correctamente.',
-            'data'    => new EventResource($event->load('creator', 'attendees.user')),
+            'data' => new EventResource($event->load('creator', 'attendees.user')),
         ], 201);
     }
 
+    /**
+     * Get an event by id
+     */
     public function show(Request $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
@@ -104,6 +113,9 @@ class EventController extends Controller
         ]);
     }
 
+    /**
+     * Update an event
+     */
     public function update(UpdateEventRequest $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
@@ -113,10 +125,13 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Evento actualizado correctamente.',
-            'data'    => new EventResource($event->load('creator', 'roles.user')),
+            'data' => new EventResource($event->load('creator', 'roles.user')),
         ]);
     }
 
+    /**
+     * Cancel an event
+     */
     public function destroy(Request $request, Group $group, Event $event): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);

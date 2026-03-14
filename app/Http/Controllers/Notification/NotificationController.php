@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
+    /**
+     * Summary of index
+     */
     public function index(Request $request): JsonResponse
     {
         $query = Notification::forUser($request->user()->id)
@@ -25,17 +28,19 @@ class NotificationController extends Controller
         return response()->json([
             'data' => NotificationResource::collection($notifications),
             'meta' => [
-                'current_page'  => $notifications->currentPage(),
-                'last_page'     => $notifications->lastPage(),
-                'total'         => $notifications->total(),
-                'unread_count'  => Notification::forUser($request->user()->id)
+                'current_page' => $notifications->currentPage(),
+                'last_page' => $notifications->lastPage(),
+                'total' => $notifications->total(),
+                'unread_count' => Notification::forUser($request->user()->id)
                     ->unread()
                     ->count(),
             ],
         ]);
     }
 
-    // Marcar una notificación como leída
+    /**
+     * Mark a notification as read
+     */
     public function markAsRead(Request $request, Notification $notification): JsonResponse
     {
         abort_if($notification->user_id !== $request->user()->id, 403);
@@ -43,12 +48,14 @@ class NotificationController extends Controller
         $notification->markAsRead();
 
         return response()->json([
-            'message' => 'Notificación marcada como leída.',
-            'data'    => new NotificationResource($notification),
+            'message' => 'Notification marked as read.',
+            'data' => new NotificationResource($notification),
         ]);
     }
 
-    // Marcar todas como leídas
+    /**
+     * Mark all notifications as read
+     */
     public function markAllAsRead(Request $request): JsonResponse
     {
         Notification::forUser($request->user()->id)
@@ -56,11 +63,13 @@ class NotificationController extends Controller
             ->update(['read_at' => now()]);
 
         return response()->json([
-            'message' => 'Todas las notificaciones marcadas como leídas.',
+            'message' => 'All notifications marked as read.',
         ]);
     }
 
-    // Eliminar una notificación
+    /**
+     * Delete a notification
+     */
     public function destroy(Request $request, Notification $notification): JsonResponse
     {
         abort_if($notification->user_id !== $request->user()->id, 403);
@@ -68,11 +77,13 @@ class NotificationController extends Controller
         $notification->delete();
 
         return response()->json([
-            'message' => 'Notificación eliminada.',
+            'message' => 'Notification deleted successfully.',
         ]);
     }
 
-    // Eliminar todas las notificaciones leídas
+    /**
+     * Delete all read notifications
+     */
     public function destroyRead(Request $request): JsonResponse
     {
         Notification::forUser($request->user()->id)

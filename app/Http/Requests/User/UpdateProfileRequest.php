@@ -24,10 +24,10 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'   => ['sometimes', 'string', 'max:100'],
-            'phone'  => ['nullable', 'string', 'max:20'],
+            'name' => ['sometimes', 'string', 'max:100'],
+            'phone' => ['nullable', 'string', 'max:20'],
             'username' => ['sometimes', 'string', 'max:100', Rule::unique('users')->ignore($this->user()->id)],
-            'email'  => [
+            'email' => [
                 'sometimes',
                 'email',
                 'max:150',
@@ -39,20 +39,20 @@ class UpdateProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.sometimes' => 'El nombre debe ser una cadena de texto.',
-            'name.string' => 'El nombre debe ser una cadena de texto.',
-            'name.max' => 'El nombre debe tener como máximo 100 caracteres.',
-            'phone.nullable' => 'El teléfono debe ser una cadena de texto.',
-            'phone.string' => 'El teléfono debe ser una cadena de texto.',
-            'phone.max' => 'El teléfono debe tener como máximo 20 caracteres.',
-            'email.sometimes' => 'El correo electrónico debe ser una cadena de texto.',
-            'email.email' => 'El correo electrónico debe ser válido.',
-            'email.max' => 'El correo electrónico debe tener como máximo 150 caracteres.',
-            'email.unique' => 'El correo electrónico ya existe.',
-            'username.sometimes' => 'El nombre de usuario debe ser una cadena de texto.',
-            'username.string' => 'El nombre de usuario debe ser una cadena de texto.',
-            'username.max' => 'El nombre de usuario debe tener como máximo 100 caracteres.',
-            'username.unique' => 'El nombre de usuario ya existe.',
+            'name.sometimes' => 'The name must be a string.',
+            'name.string' => 'The name must be a string.',
+            'name.max' => 'The name must be at most 100 characters.',
+            'phone.nullable' => 'The phone must be a string.',
+            'phone.string' => 'The phone must be a string.',
+            'phone.max' => 'The phone must be at most 20 characters.',
+            'email.sometimes' => 'The email must be a string.',
+            'email.email' => 'The email must be valid.',
+            'email.max' => 'The email must be at most 150 characters.',
+            'email.unique' => 'The email already exists.',
+            'username.sometimes' => 'The username must be a string.',
+            'username.string' => 'The username must be a string.',
+            'username.max' => 'The username must be at most 100 characters.',
+            'username.unique' => 'The username already exists.',
         ];
     }
 }

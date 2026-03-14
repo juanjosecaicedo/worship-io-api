@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Gate;
 
 class GroupMemberController extends Controller
 {
+    /**
+     * Get all members of a group
+     */
     public function index(Request $request, Group $group): JsonResponse
     {
         Gate::authorize('view', $group);
@@ -29,6 +32,9 @@ class GroupMemberController extends Controller
         ]);
     }
 
+    /**
+     * Add a new member to a group
+     */
     public function store(AddMemberRequest $request, Group $group): JsonResponse
     {
         Gate::authorize('manageMembers', $group);
@@ -47,13 +53,13 @@ class GroupMemberController extends Controller
                 ]);
 
                 return response()->json([
-                    'message' => 'Miembro reactivado correctamente.',
-                    'data'    => new GroupMemberResource($existing->load('user')),
+                    'message' => 'Member reactivated successfully.',
+                    'data' => new GroupMemberResource($existing->load('user')),
                 ]);
             }
 
             return response()->json([
-                'message' => 'El usuario ya es miembro activo del grupo.',
+                'message' => 'The user is already an active member of the group.',
             ], 409);
         }
 
@@ -63,11 +69,14 @@ class GroupMemberController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Miembro agregado correctamente.',
-            'data'    => new GroupMemberResource($member->load('user')),
+            'message' => 'Member added successfully.',
+            'data' => new GroupMemberResource($member->load('user')),
         ], 201);
     }
 
+    /**
+     * Update a member
+     */
     public function update(
         UpdateMemberRequest $request,
         Group $group,
@@ -76,13 +85,13 @@ class GroupMemberController extends Controller
         Gate::authorize('manageMembers', $group);
 
         // Verificar que el miembro pertenece al grupo
-        abort_if($member->group_id !== $group->id, 404, 'Miembro no encontrado en este grupo.');
+        abort_if($member->group_id !== $group->id, 404, 'Member not found in this group.');
 
         $member->update($request->validated());
 
         return response()->json([
-            'message' => 'Miembro actualizado correctamente.',
-            'data'    => new GroupMemberResource($member->load('user')),
+            'message' => 'Member updated successfully.',
+            'data' => new GroupMemberResource($member->load('user')),
         ]);
     }
 
@@ -93,19 +102,19 @@ class GroupMemberController extends Controller
     ): JsonResponse {
         Gate::authorize('manageMembers', $group);
 
-        abort_if($member->group_id !== $group->id, 404, 'Miembro no encontrado en este grupo.');
+        abort_if($member->group_id !== $group->id, 404, 'Member not found in this group.');
 
-        // No permitir que el creador del grupo se elimine a sí mismo
+        // Do not allow the creator of the group to delete himself
         abort_if(
             $member->user_id === $group->created_by,
             403,
-            'No puedes eliminar al creador del grupo.'
+            'You cannot delete the creator of the group.'
         );
 
         $member->update(['is_active' => false]);
 
         return response()->json([
-            'message' => 'Miembro eliminado del grupo correctamente.',
+            'message' => 'Member deleted successfully.',
         ]);
     }
 }

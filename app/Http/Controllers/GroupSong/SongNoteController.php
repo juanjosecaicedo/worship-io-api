@@ -13,13 +13,8 @@ use Illuminate\Http\Request;
 
 class SongNoteController extends Controller
 {
-
     /**
      * List user notes for a song
-     * @param Request $request
-     * @param Group $group
-     * @param GroupSong $groupSong
-     * @return JsonResponse
      */
     public function index(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -43,38 +38,38 @@ class SongNoteController extends Controller
 
         $note = SongNote::create([
             ...$request->validated(),
-            'user_id'      => $request->user()->id,
+            'user_id' => $request->user()->id,
             'group_song_id' => $groupSong->id,
         ]);
 
         return response()->json([
-            'message' => 'Nota creada correctamente.',
-            'data'    => new SongNoteResource($note->load('section')),
+            'message' => 'Note created successfully.',
+            'data' => new SongNoteResource($note->load('section')),
         ], 201);
     }
 
     public function update(StoreSongNoteRequest $request, Group $group, GroupSong $groupSong, SongNote $note): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
-        abort_if($note->user_id !== $request->user()->id, 403, 'Solo puedes editar tus propias notas.');
+        abort_if($note->user_id !== $request->user()->id, 403, 'You can only edit your own notes.');
 
         $note->update($request->validated());
 
         return response()->json([
-            'message' => 'Nota actualizada correctamente.',
-            'data'    => new SongNoteResource($note),
+            'message' => 'Note updated successfully.',
+            'data' => new SongNoteResource($note),
         ]);
     }
 
     public function destroy(Request $request, Group $group, GroupSong $groupSong, SongNote $note): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
-        abort_if($note->user_id !== $request->user()->id, 403, 'Solo puedes eliminar tus propias notas.');
+        abort_if($note->user_id !== $request->user()->id, 403, 'You can only delete your own notes.');
 
         $note->delete();
 
         return response()->json([
-            'message' => 'Nota eliminada correctamente.',
+            'message' => 'Note deleted successfully.',
         ]);
     }
 }

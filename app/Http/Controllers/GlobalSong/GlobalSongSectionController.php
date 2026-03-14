@@ -13,22 +13,28 @@ use Illuminate\Http\Request;
 
 class GlobalSongSectionController extends Controller
 {
+    /**
+     * Create a new section
+     */
     public function store(CreateSectionRequest $request, GlobalSong $globalSong): JsonResponse
     {
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede agregar secciones.'
+            'Only the creator can add sections.'
         );
 
         $section = $globalSong->sections()->create($request->validated());
 
         return response()->json([
-            'message' => 'Sección agregada correctamente.',
-            'data'    => new GlobalSongSectionResource($section),
+            'message' => 'Section added successfully.',
+            'data' => new GlobalSongSectionResource($section),
         ], 201);
     }
 
+    /**
+     * Update a section
+     */
     public function update(
         CreateSectionRequest $request,
         GlobalSong $globalSong,
@@ -37,23 +43,26 @@ class GlobalSongSectionController extends Controller
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede editar secciones.'
+            'Only the creator can edit sections.'
         );
 
         abort_if(
             $section->global_song_id !== $globalSong->id,
             404,
-            'Sección no encontrada en esta canción.'
+            'Section not found in this song.'
         );
 
         $section->update($request->validated());
 
         return response()->json([
-            'message' => 'Sección actualizada correctamente.',
-            'data'    => new GlobalSongSectionResource($section),
+            'message' => 'Section updated successfully.',
+            'data' => new GlobalSongSectionResource($section),
         ]);
     }
 
+    /**
+     * Reorder sections
+     */
     public function reorder(
         ReorderSectionsRequest $request,
         GlobalSong $globalSong
@@ -61,7 +70,7 @@ class GlobalSongSectionController extends Controller
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede reordenar secciones.'
+            'Only the creator can reorder sections.'
         );
 
         foreach ($request->sections as $item) {
@@ -71,8 +80,8 @@ class GlobalSongSectionController extends Controller
         }
 
         return response()->json([
-            'message' => 'Secciones reordenadas correctamente.',
-            'data'    => GlobalSongSectionResource::collection(
+            'message' => 'Sections reordered successfully.',
+            'data' => GlobalSongSectionResource::collection(
                 $globalSong->sections()->get()
             ),
         ]);
@@ -86,19 +95,19 @@ class GlobalSongSectionController extends Controller
         abort_if(
             $globalSong->created_by !== $request->user()->id,
             403,
-            'Solo el creador puede eliminar secciones.'
+            'Only the creator can delete sections.'
         );
 
         abort_if(
             $section->global_song_id !== $globalSong->id,
             404,
-            'Sección no encontrada en esta canción.'
+            'Section not found in this song.'
         );
 
         $section->delete();
 
         return response()->json([
-            'message' => 'Sección eliminada correctamente.',
+            'message' => 'Section deleted successfully.',
         ]);
     }
 }
