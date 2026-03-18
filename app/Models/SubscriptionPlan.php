@@ -29,12 +29,12 @@ class SubscriptionPlan extends Model
 
     public function features()
     {
-        return $this->hasMany(SubscriptionPlanFeature::class, 'plan_id');
+        return $this->hasMany(SubscriptionPlanFeature::class, 'subscription_plan_id');
     }
 
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, 'plan_id');
+        return $this->hasMany(Subscription::class, 'subscription_plan_id');
     }
 
     // ─── Helpers ──────────────────────────────────────────
