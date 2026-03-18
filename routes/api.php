@@ -21,6 +21,7 @@ use App\Http\Controllers\Subscription\InvoiceController;
 use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Subscription\WebhookController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPreferenceController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Autenticación (pública) ──────────────────────────────
@@ -187,5 +188,15 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [ReminderController::class, 'index']);
         Route::post('/', [ReminderController::class, 'store']);
         Route::delete('/{reminder}', [ReminderController::class, 'destroy']);
+    });
+
+    // ─── Preferencias del usuario ─────────────────────────
+    Route::prefix('user/preferences')->group(function () {
+        Route::get('/',           [UserPreferenceController::class, 'index']);
+        Route::get('/defaults',   [UserPreferenceController::class, 'defaults']);
+        Route::patch('/',         [UserPreferenceController::class, 'update']);
+        Route::patch('/bulk',     [UserPreferenceController::class, 'bulkUpdate']);
+        Route::delete('/reset-all', [UserPreferenceController::class, 'resetAll']);
+        Route::delete('/{key}',   [UserPreferenceController::class, 'reset']);
     });
 });

@@ -86,4 +86,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Subscription::class);
     }
+
+    // Preferencias del usuario
+    public function preferences()
+    {
+        return $this->hasMany(UserPreference::class);
+    }
+
+    // Obtener valor de una preferencia
+    public function preference(string $key): ?string
+    {
+        return $this->preferences
+            ->where('key', $key)
+            ->first()
+            ?->value ?? UserPreference::getDefault($key);
+    }
+
+    // Verificar si una preferencia es true
+    public function preferenceEnabled(string $key): bool
+    {
+        return $this->preference($key) === 'true';
+    }
 }

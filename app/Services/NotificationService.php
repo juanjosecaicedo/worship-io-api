@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\SendPushNotification;
 use App\Models\Notification;
 use App\Models\User;
+use App\Models\UserPreference;
 use Illuminate\Support\Facades\Mail;
 
 class NotificationService
@@ -24,7 +25,15 @@ class NotificationService
         string $body,
         array  $data = [],
         string $channel = 'in_app'
-    ): Notification {
+    ): ?Notification {
+
+        $user->loadMissing('preferences');
+        $prefKey = "notifications_{$type}";
+        if (isset(UserPreference::DEFAULTS[$prefKey])) {
+            if (! $user->preferenceEnabled($prefKey)) {
+                return null; // El usuario desactivó este tipo de notificación
+            }
+        }
 
         // Siempre guardar en la base de datos (in_app)
         $notification = Notification::create([
