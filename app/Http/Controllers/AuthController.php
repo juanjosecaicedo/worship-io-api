@@ -100,7 +100,7 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         return response()->json([
-            'data' => new UserResource($request->user()->load('vocalProfile')),
+            'data' => new UserResource($request->user()->load(['preferences', 'vocalProfile', 'groups'])),
         ]);
     }
 }

@@ -26,6 +26,12 @@ class UserResource extends JsonResource
             'vocal_profile' => $this->whenLoaded('vocalProfile', function () {
                 return new VocalProfileResource($this->vocalProfile);
             }),
+            'groups' => $this->whenLoaded('groups', function () {
+                return GroupResource::collection($this->groups);
+            }),
+            'preferences' => $this->whenLoaded('preferences', function () {
+                return UserPreferenceResource::collection($this->preferences);
+            }),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
 
