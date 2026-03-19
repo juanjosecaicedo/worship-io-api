@@ -8,19 +8,6 @@ metadata:
 
 # Horizon Configuration
 
-## When to Apply
-
-Activate this skill when the user explicitly mentions **Horizon** by name. Examples:
-
-- Installing or configuring Horizon
-- Setting up Horizon supervisors or worker processes
-- Restricting access to the Horizon dashboard
-- Configuring Horizon auto-scaling or balancing strategies
-- Setting up Horizon job monitoring, tags, metrics, or notifications
-- Troubleshooting Horizon blank metrics or LongWaitDetected alerts
-
-Do NOT activate for generic queue workers, Redis configuration, or job monitoring questions that do not mention Horizon.
-
 ## Documentation
 
 Use `search-docs` for detailed Horizon patterns and documentation covering configuration, supervisors, balancing, dashboard authorization, tags, notifications, metrics, and deployment.
@@ -37,7 +24,7 @@ For deeper guidance on specific topics, read the relevant reference file before 
 ### Installation
 
 ```bash
-php artisan horizon:install
+vendor/bin/sail artisan horizon:install
 ```
 
 ### Supervisor Configuration
@@ -83,7 +70,7 @@ protected function gate(): void
 
 ## Verification
 
-1. Run `php artisan horizon` and visit `/horizon`
+1. Run `vendor/bin/sail artisan horizon` and visit `/horizon`
 2. Confirm dashboard access is restricted as expected
 3. Check that metrics populate after scheduling `horizon:snapshot`
 
@@ -94,5 +81,5 @@ protected function gate(): void
 - Always check `config/horizon.php` before making changes to understand the current supervisor and environment configuration.
 - The `environments` array overrides only the keys you specify. It merges into `defaults` and does not replace it.
 - The timeout chain must be ordered: job `timeout` less than supervisor `timeout` less than `retry_after`. The wrong order can cause jobs to be retried before Horizon finishes timing them out.
-- The metrics dashboard stays blank until `horizon:snapshot` is scheduled. Running `php artisan horizon` alone does not populate metrics.
+- The metrics dashboard stays blank until `horizon:snapshot` is scheduled. Running `vendor/bin/sail artisan horizon` alone does not populate metrics.
 - Always use `search-docs` for the latest Horizon documentation rather than relying on this skill alone.

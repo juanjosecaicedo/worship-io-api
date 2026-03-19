@@ -6,7 +6,7 @@
     "herd_mcp": false,
     "mcp": true,
     "nightwatch_mcp": false,
-    "sail": false,
+    "sail": true,
     "skills": [
         "configuring-horizon",
         "pest-testing",
