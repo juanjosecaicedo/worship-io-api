@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Group;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Group\CreateGroupRequest;
+use App\Http\Requests\Group\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use Illuminate\Http\Request;
@@ -74,6 +75,21 @@ class GroupController extends Controller
 
         return response()->json([
             'data' => new GroupResource($group),
+        ]);
+    }
+
+    /**
+     * Update a group
+     */
+    public function update(UpdateGroupRequest $request, Group $group): JsonResponse
+    {
+        Gate::authorize('update', $group);
+
+        $group->update($request->validated());
+
+        return response()->json([
+            'message' => 'Group updated successfully.',
+            'data' => new GroupResource($group->load('creator')),
         ]);
     }
 
