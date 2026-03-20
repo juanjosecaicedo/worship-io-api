@@ -23,24 +23,22 @@ FROM php:8.3-fpm-alpine AS production
 LABEL maintainer="worship-io-api"
 LABEL description="Laravel 13 API - Worship IO"
 
-# Instalamos herramientas básicas y el instalador de extensiones de PHP (mucho más robusto)
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+# Instalamos herramientas básicas y el instalador de extensiones de PHP
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN chmod +x /usr/local/bin/install-php-extensions && \
-    apk add --no-cache bash curl nginx supervisor shadow
+RUN apk add --no-cache bash curl nginx supervisor shadow
 
 # -------------------------------------------------------
 # Instalación de extensiones PHP
 # -------------------------------------------------------
-# Usamos el instalador que maneja dependencias (libzip, libpng, icu, etc.) automáticamente
+# mbstring y opcache suelen venir ya en la imagen base alpine, 
+# pero instalamos las necesarias para el proyecto.
 RUN install-php-extensions \
     pdo_mysql \
-    mbstring \
     bcmath \
     pcntl \
     zip \
     intl \
-    opcache \
     sockets \
     redis
 
