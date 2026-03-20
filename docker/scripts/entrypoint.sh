@@ -49,11 +49,8 @@ echo "[3/5] Limpiando cachés y optimizando..."
 php artisan cache:clear --no-interaction || true
 php artisan optimize --no-interaction
 
-# -------------------------------------------------------
-# 5. Publicar assets de Horizon (panel de control)
-# -------------------------------------------------------
-echo "[4/5] Publicando assets de Horizon..."
-php artisan vendor:publish --tag=horizon-assets --force
+# 4. (Omitido) Publicar assets de Horizon
+# php artisan vendor:publish --tag=horizon-assets --force
 
 # -------------------------------------------------------
 # 6. Iniciar Supervisor (Nginx + PHP-FPM + Horizon + Reverb)

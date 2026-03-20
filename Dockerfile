@@ -45,8 +45,9 @@ RUN install-php-extensions \
 # Configuraciones PHP y servidor
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+# Limpiamos configuraciones por defecto para evitar conflictos
+RUN rm -rf /etc/nginx/http.d/* /etc/nginx/conf.d/*
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 
