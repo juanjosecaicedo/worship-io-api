@@ -36,9 +36,8 @@ boost.json
 /public/hot
 /public/build
 
-# Docker (para no hacer loops)
+# El Dockerfile en sí no es necesario dentro del contenedor
 Dockerfile
-docker/
 
 # IDE
 .idea
