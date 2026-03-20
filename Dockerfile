@@ -63,12 +63,16 @@ WORKDIR /var/www/html
 COPY --from=composer-builder /app/vendor ./vendor
 COPY --chown=appuser:appgroup . .
 
-# Permisos
-RUN chown -R appuser:appgroup /var/www/html && \
+# Permisos y directorios base
+RUN mkdir -p /var/run/php /var/log/nginx /var/lib/nginx /run/nginx /var/tmp/nginx && \
+    chown -R appuser:appgroup /var/www/html && \
     chmod -R 755 /var/www/html/storage && \
     chmod -R 755 /var/www/html/bootstrap/cache && \
-    mkdir -p /var/log/nginx /var/lib/nginx /run/nginx /var/tmp/nginx /var/run/php && \
-    chown -R appuser:appgroup /var/log/nginx /var/lib/nginx /run/nginx /var/tmp/nginx /var/run/php
+    # Unimos a nginx al grupo appgroup para que acceda al socket y archivos si es necesario
+    addgroup nginx appgroup && \
+    # Devolvemos la propiedad de los directorios de nginx al usuario nginx
+    chown -R nginx:nginx /var/log/nginx /var/lib/nginx /run/nginx /var/tmp/nginx /var/run/php && \
+    chmod -R 775 /var/run/php
 
 EXPOSE 80 8080
 
