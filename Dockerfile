@@ -66,9 +66,9 @@ COPY --chown=appuser:appgroup . .
 RUN chown -R appuser:appgroup /var/www/html && \
     chmod -R 755 /var/www/html/storage && \
     chmod -R 755 /var/www/html/bootstrap/cache && \
-    chown -R appuser:appgroup /var/log/nginx /var/lib/nginx /run/nginx /var/run/php
+    chown -R appuser:appgroup /var/log/nginx /var/lib/nginx /run/nginx /var/tmp/nginx /var/run/php
 
-EXPOSE 80 8080
+EXPOSE 3000 8080
 
 USER appuser
 
