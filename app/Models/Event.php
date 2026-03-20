@@ -55,6 +55,40 @@ class Event extends Model
         return $this->hasMany(Setlist::class);
     }
 
+    /**
+     * Recurrence of this event (if it is a template)
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<EventRecurrence, Event>
+     */
+    public function recurrence()
+    {
+        return $this->hasOne(EventRecurrence::class);
+    }
+
+
+    /**
+     * Recurrence to which it belongs (if it is a materialized instance)
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<EventRecurrence, Event>
+     */
+    public function parentRecurrence()
+    {
+        return $this->belongsTo(EventRecurrence::class, 'recurrence_id');
+    }
+
+    /**
+     * Scope to obtain only templates or only normal events
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeTemplates(Builder $query): Builder
+    {
+        return $query->where('is_template', true);
+    }
+
+    public function scopeRegular(Builder $query): Builder
+    {
+        return $query->where('is_template', false);
+    }
+
     // ─── Helpers ──────────────────────────────────────────
 
     /**

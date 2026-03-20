@@ -134,6 +134,15 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             Route::post('/respond', [EventAttendeeController::class, 'respond']);
             Route::post('/mark', [EventAttendeeController::class, 'markAttendance']);
         });
+
+        // ─── Eventos recurrentes ──────────────────────────
+        Route::post('/recurring', [EventController::class, 'storeRecurring']);
+
+        // Materializar y editar ocurrencias
+        Route::prefix('/recurrences/{recurrenceId}/occurrences/{date}')->group(function () {
+            Route::post('/',   [EventController::class, 'materializeOccurrence']);
+            Route::patch('/',  [EventController::class, 'updateOccurrence']);
+        });
     });
 
     // ─── Setlists ─────────────────────────────────────────
