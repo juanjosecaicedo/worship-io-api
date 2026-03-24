@@ -18,7 +18,7 @@ RUN composer install \
 # ============================================================
 # Stage 2: Imagen final de producción
 # ============================================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
 
 LABEL maintainer="worship-io-api"
 LABEL description="Laravel 13 API - Worship IO"
