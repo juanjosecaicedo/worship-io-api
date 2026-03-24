@@ -24,7 +24,7 @@ class GroupController extends Controller
         })
             ->where('is_active', true)
             ->withCount('members')
-            ->with('creator', 'members')
+            ->with('creator', 'members.user')
             ->get();
 
         return response()->json([
