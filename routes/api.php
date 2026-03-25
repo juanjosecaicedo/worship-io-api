@@ -45,6 +45,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('auth/me', [AuthController::class, 'me']);
 
     // ─── User ───────────────────────────────────
+    Route::get('users/search', [UserController::class, 'search']);
     Route::patch('user/profile', [UserController::class, 'update']);
     Route::patch('user/vocal-profile', [UserController::class, 'updateVocalProfile']);
     Route::delete('user', [UserController::class, 'destroy']);
