@@ -37,6 +37,11 @@ return [
 
     'fcm' => [
         'server_key' => env('FCM_SERVER_KEY'),
+    ],
+
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
     ]
 
 ];

@@ -69,7 +69,7 @@ return [
 
     'prefix' => env(
         'HORIZON_PREFIX',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_horizon:'
+        Str::slug(env('APP_NAME', 'laravel'), '_') . '_horizon:'
     ),
 
     /*
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    'middleware' => ['web', 'auth:sanctum'],
 
     /*
     |--------------------------------------------------------------------------
@@ -219,11 +219,94 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+            // Worker principal — jobs generales
+            'supervisor-default' => [
+                'connection'  => 'redis',
+                'queue'       => ['default'],
+                'balance'     => 'auto',
+                'minProcesses' => 1,
+                'maxProcesses' => 5,
+                'memory'      => 128,
+                'tries'       => 3,
+                'timeout'     => 60,
+                'nice'        => 0,
+            ],
+            // Worker para notificaciones push — alta prioridad
+            'supervisor-notifications' => [
+                'connection'   => 'redis',
+                'queue'        => ['notifications', 'high'],
+                'balance'      => 'auto',
+                'minProcesses' => 2,
+                'maxProcesses' => 10,
+                'memory'       => 128,
+                'tries'        => 3,
+                'timeout'      => 30,
+                'nice'         => -5, // mayor prioridad del SO
+            ],
+
+            // Worker para recordatorios — corre cada minuto
+            'supervisor-reminders' => [
+                'connection'   => 'redis',
+                'queue'        => ['reminders'],
+                'balance'      => 'simple',
+                'minProcesses' => 1,
+                'maxProcesses' => 3,
+                'memory'       => 64,
+                'tries'        => 2,
+                'timeout'      => 90,
+                'nice'         => 0,
+            ],
+
+            // Worker para emails — baja prioridad
+            'supervisor-emails' => [
+                'connection'   => 'redis',
+                'queue'        => ['emails', 'low'],
+                'balance'      => 'auto',
+                'minProcesses' => 1,
+                'maxProcesses' => 3,
+                'memory'       => 64,
+                'tries'        => 3,
+                'timeout'      => 60,
+                'nice'         => 5, // menor prioridad del SO
+            ],
+
+            // Worker para sync Google Calendar
+            'supervisor-integrations' => [
+                'connection'   => 'redis',
+                'queue'        => ['integrations'],
+                'balance'      => 'simple',
+                'minProcesses' => 1,
+                'maxProcesses' => 2,
+                'memory'       => 128,
+                'tries'        => 3,
+                'timeout'      => 120,
+                'nice'         => 0,
+            ],
         ],
 
         'local' => [
             'supervisor-1' => [
                 'maxProcesses' => 3,
+            ],
+
+            'supervisor-local' => [
+                'connection'   => 'redis',
+                'queue'        => [
+                    'high',
+                    'notifications',
+                    'reminders',
+                    'default',
+                    'emails',
+                    'integrations',
+                    'low',
+                ],
+                'balance'      => 'simple',
+                'minProcesses' => 1,
+                'maxProcesses' => 3,
+                'memory'       => 128,
+                'tries'        => 1,    // solo 1 intento en local para ver errores rápido
+                'timeout'      => 60,
+                'nice'         => 0,
             ],
         ],
     ],

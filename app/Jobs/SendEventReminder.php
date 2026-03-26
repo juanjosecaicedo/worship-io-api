@@ -18,11 +18,15 @@ class SendEventReminder implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public int $tries = 3;
+
+    public int $tries   = 3;
+    public int $timeout = 90;
 
     public function __construct(
         public Reminder $reminder
-    ) {}
+    ) {
+        $this->onQueue('reminders');
+    }
 
     /**
      * Execute the job.

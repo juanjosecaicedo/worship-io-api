@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Event\EventAttendeeController;
 use App\Http\Controllers\Event\EventController;
 use App\Http\Controllers\Event\EventRoleController;

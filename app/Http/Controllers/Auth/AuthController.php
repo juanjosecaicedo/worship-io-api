@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\GoogleLoginRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\GoogleAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -93,6 +96,44 @@ class AuthController extends Controller
             'message' => 'Successfully logged out.',
         ]);
     }
+
+    /**
+     * Login a user with Google
+     * @unauthenticated
+     * @param GoogleLoginRequest $request
+     * @return JsonResponse
+     */
+    public function googleLogin(
+        GoogleLoginRequest $request,
+        GoogleAuthService $googleAuth
+    ): JsonResponse {
+        // 1. Verify the token with Google
+        $payload = $googleAuth->verifyIdToken($request->id_token);
+
+        // 2. Find or create the user
+        $user = $googleAuth->findOrCreateUser($payload);
+
+        if (! $user->is_active) {
+            return response()->json([
+                'message' => 'Your account is disabled.',
+            ], 403);
+        }
+
+        // 3. Revoke previous tokens from the same device
+        $deviceName = $request->device_name ?? 'worship-io-app';
+        $user->tokens()->where('name', $deviceName)->delete();
+
+        // 4. Create Sanctum token
+        $token = $user->createToken($deviceName)->plainTextToken;
+
+        return response()->json([
+            'message'      => 'Session started with Google.',
+            'data'         => new UserResource($user->load('vocalProfile')),
+            'token'        => $token,
+            'is_new_user'  => is_null($user->getOriginal('google_id')),
+        ]);
+    }
+
 
     /**
      * Get current user

@@ -14,6 +14,9 @@ class SendPushNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int  $tries   = 3;
+    public int  $timeout = 30;
+
     /**
      * Create a new job instance.
      */
@@ -22,7 +25,9 @@ class SendPushNotification implements ShouldQueue
         public string $title,
         public string $body,
         public array  $data = []
-    ) {}
+    ) {
+        $this->onQueue('notifications');
+    }
 
     /**
      * Execute the job.

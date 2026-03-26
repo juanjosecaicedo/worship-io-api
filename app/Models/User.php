@@ -25,10 +25,12 @@ class User extends Authenticatable
         'username',
         'phone',
         'google_calendar_token',
+        'google_id',
         'fcm_token',
         'is_active',
         'last_login_at',
         'password',
+        'has_password',
     ];
 
     /**
@@ -55,6 +57,7 @@ class User extends Authenticatable
             'google_calendar_token' => 'array',
             'is_active'         => 'boolean',
             'password'          => 'hashed',
+            'has_password'      => 'boolean',
         ];
     }
 
