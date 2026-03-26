@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\CreateEventRequest;
 use App\Http\Requests\Event\UpdateEventRequest;
 use App\Http\Requests\Event\CreateRecurringEventRequest;
+use App\Http\Requests\Event\ListEventsRequest;
 use App\Http\Requests\Event\UpdateOccurrenceRequest;
 use App\Http\Resources\EventResource;
 use App\Services\EventRecurrenceService;
@@ -25,11 +26,11 @@ class EventController extends Controller
     /**
      * List all events of a group
      * 
-     * @param Request $request
+     * @param ListEventsRequest $request
      * @param Group $group
      * @return JsonResponse
      */
-    public function index(Request $request, Group $group): JsonResponse
+    public function index(ListEventsRequest $request, Group $group): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
 
@@ -74,14 +75,24 @@ class EventController extends Controller
         //$events = $query->paginate($request->per_page ?? 20);
         $events = $this->recurrenceService->getEventsInRange($group->id, $from, $to);
 
+        $perPage = $request->input('per_page', 20);
+        $page = $request->input('page', 1);
+
+        $paginatedEvents = new \Illuminate\Pagination\LengthAwarePaginator(
+            $events->forPage($page, $perPage)->values(),
+            $events->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return response()->json([
-            'data' => $events,
+            'data' => $paginatedEvents->items(),
             'meta' => [
-                'current_page' => $events->currentPage(),
-                'last_page' => $events->lastPage(),
-                'per_page' => $events->perPage(),
-                'total' => $events->total(),
+                'current_page' => $paginatedEvents->currentPage(),
+                'last_page' => $paginatedEvents->lastPage(),
+                'per_page' => $paginatedEvents->perPage(),
+                'total' => $paginatedEvents->total(),
             ],
         ]);
     }
