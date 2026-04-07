@@ -20,8 +20,11 @@ class GroupMemberObserver
         $this->service->send(
             user: $groupMember->user,
             type: 'member_added',
-            title: '🎸 Bienvenido al grupo',
-            body: "Has sido agregado al grupo \"{$group->name}\" como {$groupMember->role}.",
+            title: __('notifications.member_added_title'),
+            body: __('notifications.member_added_body', [
+                'group' => $group->name,
+                'role' => __("groups.role_{$groupMember->role}")
+            ]),
             data: [
                 'group_id' => $group->id,
                 'role'     => $groupMember->role,

@@ -19,4 +19,9 @@ return [
     'member_deleted_success' => 'Miembro eliminado correctamente.',
     'member_not_found' => 'Miembro no encontrado en este grupo.',
     'cannot_delete_creator' => 'No puedes eliminar al creador del grupo.',
+    'role_admin' => 'Administrador',
+    'role_leader' => 'Líder',
+    'role_vocalist' => 'Vocalista',
+    'role_musician' => 'Músico',
+    'role_helper' => 'Ayudante',
 ];

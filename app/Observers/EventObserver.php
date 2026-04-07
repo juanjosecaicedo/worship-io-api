@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Events\NewEvent;
+use App\Events\UpdatedEvent;
 use App\Models\Event;
 use App\Services\NotificationService;
 
@@ -17,9 +19,11 @@ class EventObserver
         $this->service->notifyGroup(
             groupId: $event->group_id,
             type: 'event_created',
-            title: '📅 Nuevo evento',
-            body: "Se ha programado \"{$event->title}\" para el " .
-                $event->start_datetime->format('d/m/Y H:i'),
+            title: __('notifications.event_created_title'),
+            body: __('notifications.event_created_body', [
+                'title' => $event->title,
+                'datetime' => $event->start_datetime->format('d/m/Y H:i')
+            ]),
             data: [
                 'event_id' => $event->id,
                 'group_id' => $event->group_id,
@@ -27,6 +31,8 @@ class EventObserver
             ],
             channel: 'push',
         );
+
+        NewEvent::dispatch($event);
     }
 
     /**
@@ -38,8 +44,8 @@ class EventObserver
             $this->service->notifyGroup(
                 groupId: $event->group_id,
                 type: 'event_cancelled',
-                title: '❌ Evento cancelado',
-                body: "El evento \"{$event->title}\" ha sido cancelado.",
+                title: __('notifications.event_cancelled_title'),
+                body: __('notifications.event_cancelled_body', ['title' => $event->title]),
                 data: ['event_id' => $event->id, 'group_id' => $event->group_id],
                 channel: 'push',
             );
@@ -50,12 +56,14 @@ class EventObserver
             $this->service->notifyGroup(
                 groupId: $event->group_id,
                 type: 'event_updated',
-                title: '✏️ Evento actualizado',
-                body: "El evento \"{$event->title}\" ha sido modificado.",
+                title: __('notifications.event_updated_title'),
+                body: __('notifications.event_updated_body', ['title' => $event->title]),
                 data: ['event_id' => $event->id, 'group_id' => $event->group_id],
                 channel: 'in_app',
             );
         }
+
+        UpdatedEvent::dispatch($event);
     }
 
     /**

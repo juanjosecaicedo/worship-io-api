@@ -15,4 +15,12 @@ return [
     'reminder_created' => 'Recordatorio creado correctamente.',
     'reminder_deleted' => 'Recordatorio eliminado correctamente.',
     'cannot_delete_sent_reminder' => 'No se puede eliminar un recordatorio ya enviado.',
+    'event_created_title' => '📅 Nuevo evento',
+    'event_created_body' => 'Se ha programado ":title" para el :datetime',
+    'event_cancelled_title' => '❌ Evento cancelado',
+    'event_cancelled_body' => 'El evento ":title" ha sido cancelado.',
+    'event_updated_title' => '✏️ Evento actualizado',
+    'event_updated_body' => 'El evento ":title" ha sido modificado.',
+    'member_added_title' => '🎸 Bienvenido al grupo',
+    'member_added_body' => 'Has sido agregado al grupo ":group" como :role.',
 ];
