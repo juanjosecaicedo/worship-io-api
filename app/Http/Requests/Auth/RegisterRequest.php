@@ -39,7 +39,7 @@ class RegisterRequest extends FormRequest
              * The user's unique username.
              * @example johndoe
              */
-            'username' => ['required', 'string', 'max:100', 'unique:users,username'],
+            'username' => ['nullable', 'string', 'max:100', 'unique:users,username'],
 
             /**
              * The user's password.

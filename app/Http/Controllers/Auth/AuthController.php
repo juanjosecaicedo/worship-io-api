@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -29,7 +30,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'username' => $request->username,
+            'username' => $request->username ?? Str::before($request->email, '@'),
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
         ]);
