@@ -17,4 +17,11 @@ return [
     'occurrence_ready' => 'Occurrence ready to edit.',
     'occurrence_updated' => 'Occurrence updated successfully.',
     'occurrence_already_materialized' => 'This occurrence was already materialized.',
+    'user_assigned_to_event_title' => 'You have been assigned to an event',
+    'user_assigned_to_event_body' => 'You have been assigned to the event :event as :role',
+    'role_band_director' => 'Band director',
+    'role_vocalist' => 'Vocalist',
+    'role_choir' => 'Choir',
+    'role_musician' => 'Musician',
+    'role_technician' => 'Technician',
 ];

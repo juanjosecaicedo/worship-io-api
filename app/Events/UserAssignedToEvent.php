@@ -2,23 +2,22 @@
 
 namespace App\Events;
 
-use App\Models\Event;
+use App\Models\EventRole;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdatedEvent
+class UserAssignedToEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Event $event)
+    public function __construct(public EventRole $eventRole)
     {
         //
     }
@@ -31,7 +30,7 @@ class UpdatedEvent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel("events"),
+            new PrivateChannel("user.{$this->eventRole->user_id}"),
         ];
     }
 }

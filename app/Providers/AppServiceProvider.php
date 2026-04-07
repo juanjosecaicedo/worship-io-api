@@ -14,6 +14,7 @@ use App\Policies\GroupPolicy;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Dedoc\Scramble\Support\Generator\Server;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -39,9 +40,8 @@ class AppServiceProvider extends ServiceProvider
 
         Scramble::configure()
             ->withDocumentTransformers(function (OpenApi $openApi) {
-                $openApi->secure(
-                    SecurityScheme::http('bearer')
-                );
+                $openApi->secure(SecurityScheme::http('bearer'));
+                $openApi->info->setDescription(view('docs.api-introduction')->render());
             });
 
         if ($this->app->environment('production')) {

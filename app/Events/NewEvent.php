@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Event;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -17,7 +18,7 @@ class NewEvent
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(public Event $event)
     {
         //
     }
@@ -30,7 +31,7 @@ class NewEvent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel("events"),
         ];
     }
 }

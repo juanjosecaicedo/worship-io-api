@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\EventRolesObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(EventRolesObserver::class)]
 class EventRole extends Model
 {
     protected $fillable = [
