@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'song_id_required' => 'The song is required.',
+    'song_id_exists' => 'The selected song does not exist.',
+    'order_required' => 'The order is required.',
+    'order_min' => 'The order must be at least 0.',
+    'key_override_in' => 'The key override is not valid.',
+    'duration_min' => 'The duration must be at least 1 second.',
+    'setlist_name_required' => 'The setlist name is required.',
+    'setlist_name_max' => 'The name may not be greater than 150 characters.',
+    'vocalist_id_required' => 'The vocalist ID is required.',
+    'vocalist_id_exists' => 'The selected user is not a group member.',
+    'created_success' => 'Setlist created successfully.',
+    'updated_success' => 'Setlist updated successfully.',
+    'deleted_success' => 'Setlist deleted successfully.',
+    'song_added_success' => 'Song added to setlist successfully.',
+    'song_updated_success' => 'Setlist song updated successfully.',
+    'song_removed_success' => 'Song removed from setlist successfully.',
+    'vocalist_added_success' => 'Vocalist assigned successfully.',
+    'vocalist_removed_success' => 'Vocalist removed successfully.',
+    'song_not_belongs_to_group' => 'The song does not belong to this group.',
+    'song_already_in_setlist' => 'This song is already in the setlist.',
+    'reordered_success' => 'Setlist reordered successfully.',
+    'user_not_group_member' => 'The user is not a member of this group.',
+    'vocalist_role_exists' => 'This vocalist already has this role in this song.',
+    'vocalist_assignment_updated' => 'Vocalist assignment updated successfully.',
+];

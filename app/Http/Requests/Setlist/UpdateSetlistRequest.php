@@ -23,9 +23,18 @@ class UpdateSetlistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['sometimes', 'string', 'max:100'],
-            'notes'     => ['nullable', 'string'],
-            'is_active' => ['sometimes', 'boolean'],
+            /**
+             * The name of the setlist.
+             * @example New Setlist Name
+             */
+            'name' => ['required', 'string', 'max:150'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('setlists.setlist_name_required'),
         ];
     }
 }

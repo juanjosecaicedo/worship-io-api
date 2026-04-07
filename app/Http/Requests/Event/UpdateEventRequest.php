@@ -23,14 +23,62 @@ class UpdateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The title of the event.
+             * @example Sunday Morning Service
+             */
             'title'          => ['sometimes', 'string', 'max:150'],
+
+            /**
+             * The type of the event.
+             * @example service
+             */
             'type'           => ['sometimes', 'in:service,rehearsal,concert,meeting,other'],
+
+            /**
+             * A detailed description of the event.
+             */
             'description'    => ['nullable', 'string'],
+
+            /**
+             * The location where the event takes place.
+             */
             'location'       => ['nullable', 'string', 'max:200'],
+
+            /**
+             * The start date and time of the event.
+             */
             'start_datetime' => ['sometimes', 'date'],
+
+            /**
+             * The end date and time of the event.
+             */
             'end_datetime'   => ['sometimes', 'date', 'after:start_datetime'],
+
+            /**
+             * The status of the event.
+             * @example scheduled
+             */
             'status'         => ['sometimes', 'in:scheduled,in_progress,completed,cancelled,postponed'],
+
+            /**
+             * Hexadecimal color code for the event.
+             */
             'color'          => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'type.in'              => __('events.type_in'),
+            'end_datetime.after'   => __('events.end_datetime_after'),
+            'color.regex'          => __('events.color_regex'),
         ];
     }
 }

@@ -132,5 +132,7 @@ return [
         //RestrictedDocsAccess::class,
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        \App\Support\Scramble\GlobalHeadersExtension::class,
+    ],
 ];

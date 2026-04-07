@@ -23,27 +23,66 @@ class CreateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The title of the event.
+             * @example Sunday Morning Service
+             */
             'title'          => ['required', 'string', 'max:150'],
+
+            /**
+             * The type of the event.
+             * @example service
+             */
             'type'           => ['required', 'in:service,rehearsal,concert,meeting,other'],
+
+            /**
+             * A detailed description of the event.
+             * @example Join us for our weekly morning worship service.
+             */
             'description'    => ['nullable', 'string'],
+
+            /**
+             * The location where the event takes place.
+             * @example Main Auditorium
+             */
             'location'       => ['nullable', 'string', 'max:200'],
+
+            /**
+             * The start date and time of the event (must be in the future).
+             * @example 2026-04-12 09:00:00
+             */
             'start_datetime' => ['required', 'date', 'after:now'],
+
+            /**
+             * The end date and time of the event (must be after the start).
+             * @example 2026-04-12 11:00:00
+             */
             'end_datetime'   => ['required', 'date', 'after:start_datetime'],
+
+            /**
+             * Hexadecimal color code for the event.
+             * @example #3B82F6
+             */
             'color'          => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ];
     }
 
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
-            'title.required'          => 'El título del evento es obligatorio.',
-            'type.required'           => 'El tipo de evento es obligatorio.',
-            'type.in'                 => 'El tipo debe ser: service, rehearsal, concert, meeting u other.',
-            'start_datetime.required' => 'La fecha de inicio es obligatoria.',
-            'start_datetime.after'    => 'El evento debe ser en una fecha futura.',
-            'end_datetime.required'   => 'La fecha de fin es obligatoria.',
-            'end_datetime.after'      => 'La fecha de fin debe ser posterior a la de inicio.',
-            'color.regex'             => 'El color debe ser un código hexadecimal válido.',
+            'title.required'          => __('events.title_required'),
+            'type.required'           => __('events.type_required'),
+            'type.in'                 => __('events.type_in'),
+            'start_datetime.required' => __('events.start_datetime_required'),
+            'start_datetime.after'    => __('events.start_datetime_after'),
+            'end_datetime.required'   => __('events.end_datetime_required'),
+            'end_datetime.after'      => __('events.end_datetime_after'),
+            'color.regex'             => __('events.color_regex'),
         ];
     }
 }

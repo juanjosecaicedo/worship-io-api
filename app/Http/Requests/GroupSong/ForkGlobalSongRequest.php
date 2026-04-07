@@ -25,9 +25,28 @@ class ForkGlobalSongRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The custom key for the group's version.
+             * @example G
+             */
             'custom_key'            => ['nullable', 'string', Rule::in(GlobalSong::VALID_KEYS)],
+
+            /**
+             * The custom tempo for the group's version.
+             * @example 72
+             */
             'custom_tempo'          => ['nullable', 'integer', 'min:20', 'max:300'],
+
+            /**
+             * The custom time signature for the group's version.
+             * @example 4/4
+             */
             'custom_time_signature' => ['nullable', 'string', 'in:4/4,3/4,6/8,12/8,2/4,5/4,7/8'],
+
+            /**
+             * Whether the song is public within the network.
+             * @example true
+             */
             'is_public'             => ['sometimes', 'boolean'],
         ];
     }
@@ -35,7 +54,7 @@ class ForkGlobalSongRequest extends FormRequest
     public function messages()
     {
         return [
-            'custom_key.in' => 'La tonalidad no es válida.',
+            'custom_key.in' => __('group_songs.custom_key_in'),
         ];
     }
 }

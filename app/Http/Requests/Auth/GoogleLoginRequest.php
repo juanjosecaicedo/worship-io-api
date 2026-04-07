@@ -23,7 +23,15 @@ class GoogleLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The Google ID token.
+             */
             'id_token'    => ['required', 'string'],
+
+            /**
+             * The name of the device making the request.
+             * @example Android Device
+             */
             'device_name' => ['nullable', 'string', 'max:100'],
         ];
     }
@@ -31,7 +39,7 @@ class GoogleLoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id_token.required' => 'Google token is required.',
+            'id_token.required' => __('auth.id_token_required'),
         ];
     }
 }

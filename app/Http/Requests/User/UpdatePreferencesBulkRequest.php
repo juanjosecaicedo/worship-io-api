@@ -23,11 +23,13 @@ class UpdatePreferencesBulkRequest extends FormRequest
      */
     public function rules(): array
     {
-        $validKeys = implode(',', array_keys(UserPreference::DEFAULTS));
-
+        /**
+         * An object containing multiple preferences.
+         * @example {"language": "es", "theme": "dark"}
+         */
         return [
             'preferences'         => ['required', 'array', 'min:1'],
-            'preferences.*.key'   => ['required', 'string', "in:{$validKeys}"],
+            'preferences.*.key'   => ['required', 'string', 'in:' . implode(',', array_keys(UserPreference::DEFAULTS))],
             'preferences.*.value' => ['required', 'string', 'max:255'],
         ];
     }
@@ -35,7 +37,8 @@ class UpdatePreferencesBulkRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'preferences.required'         => 'Las preferencias son obligatorias.',
+            'preferences.required'         => __('users.preference_value_required'),
+            'preferences.array'            => __('users.preferences_array'),
             'preferences.*.key.required'   => 'Cada preferencia debe tener una clave.',
             'preferences.*.key.in'         => 'Una de las claves no es válida.',
             'preferences.*.value.required' => 'Cada preferencia debe tener un valor.',

@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name_string' => 'El nombre debe ser una cadena de texto.',
+    'name_max' => 'El nombre no debe exceder los 100 caracteres.',
+    'phone_string' => 'El teléfono debe ser una cadena de texto.',
+    'phone_max' => 'El teléfono no debe exceder los 20 caracteres.',
+    'username_string' => 'El nombre de usuario debe ser una cadena de texto.',
+    'username_max' => 'El nombre de usuario no debe exceder los 100 caracteres.',
+    'username_unique' => 'El nombre de usuario ya está en uso.',
+    'email_email' => 'El correo electrónico debe ser una dirección válida.',
+    'email_max' => 'El correo electrónico no debe exceder los 150 caracteres.',
+    'email_unique' => 'El correo electrónico ya está en uso.',
+    'preference_key_required' => 'La clave de preferencia es obligatoria.',
+    'preference_value_required' => 'El valor de preferencia es obligatorio.',
+    'preferences_array' => 'Las preferencias deben ser un arreglo.',
+    'vocal_type_in' => 'El tipo de voz seleccionado no es válido.',
+    'profile_updated' => 'Perfil actualizado correctamente.',
+    'vocal_profile_updated' => 'Perfil vocal actualizado correctamente.',
+    'account_deactivated' => 'Cuenta desactivada correctamente.',
+    'preference_updated' => 'Preferencia actualizada correctamente.',
+    'bulk_preferences_updated' => ':count preferencia(s) actualizada(s) correctamente.',
+    'preference_reset' => 'Preferencia restablecida al valor predeterminado.',
+    'all_preferences_reset' => 'Todas las preferencias han sido restablecidas.',
+    'invalid_preference_key' => 'Clave de preferencia no válida.',
+];

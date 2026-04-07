@@ -14,9 +14,9 @@ class UserPreferenceController extends Controller
 {
 
     /**
-     * View all user preferences (including defaults)
-     * @param Request $request
-     * @return JsonResponse
+     * List preferences
+     * 
+     * Returns all user preferences including those with default values.
      */
     public function index(Request $request): JsonResponse
     {
@@ -27,10 +27,10 @@ class UserPreferenceController extends Controller
         ]);
     }
 
-
     /**
-     * View available keys with their default values
-     * @return JsonResponse
+     * Get default preferences
+     * 
+     * Returns the available preference keys and their default values.
      */
     public function defaults(): JsonResponse
     {
@@ -39,11 +39,8 @@ class UserPreferenceController extends Controller
         ]);
     }
 
-
     /**
-     * SUpdate a single preference
-     * @param UpdatePreferenceRequest $request
-     * @return JsonResponse
+     * Update preference
      */
     public function update(UpdatePreferenceRequest $request): JsonResponse
     {
@@ -56,7 +53,7 @@ class UserPreferenceController extends Controller
         );
 
         return response()->json([
-            'message' => 'Preference updated successfully.',
+            'message' => __('users.preference_updated'),
             'data'    => [
                 'key'   => $preference->key,
                 'value' => $preference->value,
@@ -65,9 +62,9 @@ class UserPreferenceController extends Controller
     }
 
     /**
-     * Update multiple preferences in a single request
-     * @param UpdatePreferencesBulkRequest $request
-     * @return JsonResponse
+     * Bulk update preferences
+     * 
+     * Updates multiple preferences in a single request.
      */
     public function bulkUpdate(UpdatePreferencesBulkRequest $request): JsonResponse
     {
@@ -87,23 +84,22 @@ class UserPreferenceController extends Controller
         }
 
         return response()->json([
-            'message' => count($updated) . ' preference(s) updated successfully.',
+            'message' => __('users.bulk_preferences_updated', ['count' => count($updated)]),
             'data'    => $updated,
         ]);
     }
 
     /**
-     * Reset a single preference to its default value
-     * @param Request $request
-     * @param string $key
-     * @return JsonResponse
+     * Reset preference
+     * 
+     * Resets a specific preference to its default value by deleting the custom setting.
      */
     public function reset(Request $request, string $key): JsonResponse
     {
         abort_unless(
             array_key_exists($key, UserPreference::DEFAULTS),
             422,
-            'Invalid preference key.'
+            __('users.invalid_preference_key')
         );
 
         UserPreference::where('user_id', $request->user()->id)
@@ -111,7 +107,7 @@ class UserPreferenceController extends Controller
             ->delete();
 
         return response()->json([
-            'message' => 'Preference reset to default value.',
+            'message' => __('users.preference_reset'),
             'data'    => [
                 'key'   => $key,
                 'value' => UserPreference::DEFAULTS[$key],
@@ -120,16 +116,16 @@ class UserPreferenceController extends Controller
     }
 
     /**
-     * Reset all preferences to their default values
-     * @param Request $request
-     * @return JsonResponse
+     * Reset all preferences
+     * 
+     * Resets all user preferences to their default values.
      */
     public function resetAll(Request $request): JsonResponse
     {
         UserPreference::where('user_id', $request->user()->id)->delete();
 
         return response()->json([
-            'message' => 'All preferences reset to default values.',
+            'message' => __('users.all_preferences_reset'),
             'data'    => UserPreference::DEFAULTS,
         ]);
     }

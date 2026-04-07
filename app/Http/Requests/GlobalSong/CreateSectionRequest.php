@@ -23,10 +23,32 @@ class CreateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The type of section.
+             * @example chorus
+             */
             'type'   => ['required', 'in:intro,verse,pre_chorus,chorus,bridge,outro,instrumental,tag,vamp'],
+
+            /**
+             * Custom label for the section.
+             * @example Chorus 1
+             */
             'label'  => ['required', 'string', 'max:50'],
+
+            /**
+             * Lyrics for this section.
+             */
             'lyrics' => ['nullable', 'string'],
+
+            /**
+             * Chords data for this section.
+             */
             'chords' => ['nullable', 'array'],
+
+            /**
+             * Order of the section in the song structure.
+             * @example 1
+             */
             'order'  => ['required', 'integer', 'min:0'],
         ];
     }
@@ -34,9 +56,9 @@ class CreateSectionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'type.required'  => 'El tipo de sección es obligatorio.',
-            'type.in'        => 'El tipo debe ser: intro, verse, pre_chorus, chorus, bridge, outro, instrumental, tag o vamp.',
-            'label.required' => 'La etiqueta de la sección es obligatoria.',
+            'type.required'  => __('global_songs.section_type_required'),
+            'type.in'        => __('global_songs.section_type_in'),
+            'label.required' => __('global_songs.section_label_required'),
         ];
     }
 }

@@ -23,7 +23,11 @@ class SearchUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['required', 'string', 'min:1'],
+            /**
+             * The search query (name, email or username).
+             * @example john
+             */
+            'q' => ['required', 'string', 'min:2'],
         ];
     }
 

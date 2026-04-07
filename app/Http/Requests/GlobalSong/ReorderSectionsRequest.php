@@ -23,8 +23,21 @@ class ReorderSectionsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * List of sections with their new order.
+             */
             'sections'         => ['required', 'array', 'min:1'],
+
+            /**
+             * The section ID.
+             * @example 1
+             */
             'sections.*.id'    => ['required', 'integer', 'exists:global_song_sections,id'],
+
+            /**
+             * The new order for the section.
+             * @example 0
+             */
             'sections.*.order' => ['required', 'integer', 'min:0'],
         ];
     }
@@ -32,9 +45,9 @@ class ReorderSectionsRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sections.required'         => 'El listado de secciones es obligatorio.',
-            'sections.*.id.exists'      => 'Una de las secciones no existe.',
-            'sections.*.order.required' => 'El orden de cada sección es obligatorio.',
+            'sections.required'         => __('global_songs.sections_required'),
+            'sections.*.id.exists'      => __('global_songs.section_id_exists'),
+            'sections.*.order.required' => __('global_songs.section_order_required'),
         ];
     }
 }

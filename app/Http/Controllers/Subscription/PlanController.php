@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 class PlanController extends Controller
 {
     /**
-     * Get all active subscription plans
+     * List active plans
+     * 
+     * Returns a list of all subscription plans that are currently active.
      */
     public function index(): JsonResponse
     {
@@ -25,7 +27,7 @@ class PlanController extends Controller
     }
 
     /**
-     * Get a specific subscription plan
+     * Get plan details
      */
     public function show(SubscriptionPlan $plan): JsonResponse
     {

@@ -25,10 +25,33 @@ class AddSongToSetlistRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The group song ID to add.
+             * @example 1
+             */
             'group_song_id'     => ['required', 'exists:group_songs,id'],
+
+            /**
+             * The order in the setlist.
+             * @example 1
+             */
             'order'             => ['required', 'integer', 'min:0'],
+
+            /**
+             * Key override for this specific setlist item.
+             * @example G
+             */
             'key_override'      => ['nullable', 'string', Rule::in(GlobalSong::VALID_KEYS)],
+
+            /**
+             * Duration override in seconds.
+             * @example 300
+             */
             'duration_override' => ['nullable', 'integer', 'min:1'],
+
+            /**
+             * Public notes for the worship team.
+             */
             'notes'             => ['nullable', 'string'],
         ];
     }
@@ -36,9 +59,9 @@ class AddSongToSetlistRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'group_song_id.required' => 'La canción es obligatoria.',
-            'group_song_id.exists'   => 'La canción seleccionada no existe.',
-            'order.required'         => 'El orden es obligatorio.',
+            'group_song_id.required' => __('setlists.song_id_required'),
+            'group_song_id.exists'   => __('setlists.song_id_exists'),
+            'order.required'         => __('setlists.order_required'),
         ];
     }
 }

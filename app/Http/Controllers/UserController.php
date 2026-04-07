@@ -17,22 +17,22 @@ class UserController extends Controller
     /**
      * Update user profile
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Updates the basic profile information of the authenticated user.
      */
     public function update(UpdateProfileRequest $request): JsonResponse
     {
         $request->user()->update($request->validated());
 
         return response()->json([
-            'message' => 'Profile updated successfully.',
+            'message' => __('users.profile_updated'),
             'data' => new UserResource($request->user()->fresh()),
         ]);
     }
 
     /**
-     * Update user vocal profile
+     * Update vocal profile
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Updates or creates the vocal profile (voice types) of the authenticated user.
      */
     public function updateVocalProfile(UpdateVocalProfileRequest $request): JsonResponse
     {
@@ -42,15 +42,15 @@ class UserController extends Controller
         );
 
         return response()->json([
-            'message' => 'Vocal profile updated successfully.',
+            'message' => __('users.vocal_profile_updated'),
             'data' => new VocalProfileResource($profile),
         ]);
     }
 
     /**
-     * Delete user account
+     * Deactivate account
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Deactivates the authenticated user's account and revokes all active tokens.
      */
     public function destroy(Request $request): JsonResponse
     {
@@ -62,15 +62,14 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Account deactivated successfully.',
+            'message' => __('users.account_deactivated'),
         ]);
     }
 
     /**
-     * Search users by name, email, or username.
+     * Search users
      *
-     * @param  \App\Http\Requests\User\SearchUserRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Search for active users by name, email, or username, excluding the authenticated user.
      */
     public function search(SearchUserRequest $request): JsonResponse
     {

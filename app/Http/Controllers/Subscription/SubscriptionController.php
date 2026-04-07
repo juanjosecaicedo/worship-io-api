@@ -16,7 +16,7 @@ class SubscriptionController extends Controller
     public function __construct(protected SubscriptionService $service) {}
 
     /**
-     * View user's active subscription
+     * Get active subscription
      */
     public function show(Request $request): JsonResponse
     {
@@ -27,7 +27,7 @@ class SubscriptionController extends Controller
 
         if (! $subscription) {
             return response()->json([
-                'message' => 'You do not have an active subscription.',
+                'message' => __('subscriptions.not_active'),
                 'data' => null,
             ]);
         }
@@ -38,7 +38,7 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Subscribe to a plan
+     * Create subscription
      */
     public function store(CreateSubscriptionRequest $request): JsonResponse
     {
@@ -51,7 +51,7 @@ class SubscriptionController extends Controller
 
         if ($current && $current->plan_id === $plan->id) {
             return response()->json([
-                'message' => 'You already have an active subscription to this plan.',
+                'message' => __('subscriptions.already_subscribed'),
             ], 409);
         }
 
@@ -62,19 +62,21 @@ class SubscriptionController extends Controller
         );
 
         return response()->json([
-            'message' => 'Subscription created successfully.',
+            'message' => __('subscriptions.created_success'),
             'data' => new SubscriptionResource($subscription->load('plan.features')),
         ], 201);
     }
 
     /**
-     * Change plan (upgrade/downgrade)
+     * Change plan
+     * 
+     * Upgrades or downgrades the current subscription plan.
      */
     public function changePlan(ChangePlanRequest $request): JsonResponse
     {
         $subscription = $request->user()->activeSubscription()->first();
 
-        abort_unless(! $subscription, 404, 'You do not have an active subscription.');
+        abort_unless((bool)$subscription, 404, __('subscriptions.not_active'));
 
         $newPlan = SubscriptionPlan::where('slug', $request->plan_slug)
             ->where('is_active', true)
@@ -83,25 +85,27 @@ class SubscriptionController extends Controller
         $subscription = $this->service->changePlan($subscription, $newPlan);
 
         return response()->json([
-            'message' => 'Plan updated successfully.',
+            'message' => __('subscriptions.updated_success'),
             'data' => new SubscriptionResource($subscription->load('plan.features')),
         ]);
     }
 
     /**
      * Cancel subscription
+     * 
+     * Cancels the active subscription. Access remains until end of period.
      */
     public function cancel(Request $request): JsonResponse
     {
         $subscription = $request->user()->activeSubscription()->first();
 
-        abort_unless(! $subscription, 404, 'You do not have an active subscription.');
-        abort_if($subscription->plan->price === 0, 422, 'The free plan cannot be canceled.');
+        abort_unless((bool)$subscription, 404, __('subscriptions.not_active'));
+        abort_if($subscription->plan->price === 0, 422, __('subscriptions.cannot_cancel_free'));
 
         $subscription = $this->service->cancel($subscription);
 
         return response()->json([
-            'message' => 'Subscription canceled. You will have access until the end of the period.',
+            'message' => __('subscriptions.canceled_success'),
             'data' => new SubscriptionResource($subscription),
         ]);
     }

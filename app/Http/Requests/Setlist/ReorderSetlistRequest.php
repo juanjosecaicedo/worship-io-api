@@ -23,19 +23,30 @@ class ReorderSetlistRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * List of song IDs in their new order.
+             * @example [5, 2, 8]
+             */
             'songs'         => ['required', 'array', 'min:1'],
+
+            /**
+             * The setlist song ID.
+             */
             'songs.*.id'    => ['required', 'integer', 'exists:setlist_songs,id'],
+
+            /**
+             * The new order for the song.
+             */
             'songs.*.order' => ['required', 'integer', 'min:0'],
         ];
     }
 
-
     public function messages(): array
     {
         return [
-            'songs.required'         => 'El listado de canciones es obligatorio.',
-            'songs.*.id.exists'      => 'Una de las canciones del setlist no existe.',
-            'songs.*.order.required' => 'El orden de cada canción es obligatorio.',
+            'songs.required'         => __('setlists.song_id_required'),
+            'songs.*.id.exists'      => __('setlists.song_id_exists'),
+            'songs.*.order.required' => __('setlists.order_required'),
         ];
     }
 }

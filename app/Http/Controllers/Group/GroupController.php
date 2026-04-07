@@ -14,7 +14,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class GroupController extends Controller
 {
     /**
-     * Get all groups
+     * List user groups
+     * 
+     * Returns all active groups where the authenticated user is a member.
      */
     public function index(Request $request): JsonResponse
     {
@@ -34,10 +36,8 @@ class GroupController extends Controller
 
     /**
      * Create a new group
-     *
-     * @authenticated
-     * @param Request $request
-     * @return JsonResponse
+     * 
+     * The authenticated user will be automatically assigned as the group administrator.
      */
     public function store(CreateGroupRequest $request): JsonResponse
     {
@@ -54,18 +54,13 @@ class GroupController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Group created successfully.',
+            'message' => __('groups.created_success'),
             'data' => new GroupResource($group->load('creator')),
         ], 201);
     }
 
     /**
-     * Get a group by ID
-     *
-     * @authenticated
-     * @param Request $request
-     * @param Group $group
-     * @return JsonResponse
+     * Get group details
      */
     public function show(Request $request, Group $group): JsonResponse
     {
@@ -88,13 +83,15 @@ class GroupController extends Controller
         $group->update($request->validated());
 
         return response()->json([
-            'message' => 'Group updated successfully.',
+            'message' => __('groups.updated_success'),
             'data' => new GroupResource($group->load('creator')),
         ]);
     }
 
     /**
      * Delete a group
+     * 
+     * Deactivates the group. Only group administrators can perform this action.
      */
     public function destroy(Request $request, Group $group): JsonResponse
     {
@@ -103,7 +100,7 @@ class GroupController extends Controller
         $group->update(['is_active' => false]);
 
         return response()->json([
-            'message' => 'Group deleted successfully.',
+            'message' => __('groups.deleted_success'),
         ]);
     }
 }

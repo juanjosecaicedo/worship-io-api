@@ -23,8 +23,22 @@ class StoreSongNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The section ID to attach the note to.
+             * @example 1
+             */
             'section_id' => ['nullable', 'exists:group_song_sections,id'],
+
+            /**
+             * The type of note.
+             * @example verse
+             */
             'type'       => ['required', 'in:intro,verse,pre_chorus,chorus,bridge,outro,instrumental,tag,vamp'],
+
+            /**
+             * The content of the note.
+             * @example Play with light touch.
+             */
             'content'    => ['required', 'string'],
         ];
     }
@@ -32,8 +46,8 @@ class StoreSongNoteRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'type.required'    => 'El tipo de nota es obligatorio.',
-            'content.required' => 'El contenido de la nota es obligatorio.',
+            'type.required'    => __('group_songs.note_type_required'),
+            'content.required' => __('group_songs.note_content_required'),
         ];
     }
 }

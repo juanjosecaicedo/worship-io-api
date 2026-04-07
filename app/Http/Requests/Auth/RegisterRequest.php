@@ -23,10 +23,34 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The user's full name.
+             * @example John Doe
+             */
             'name'     => ['required', 'string', 'max:100'],
+
+            /**
+             * The user's email address.
+             * @example john@example.com
+             */
             'email'    => ['required', 'email', 'max:150', 'unique:users,email'],
+
+            /**
+             * The user's unique username.
+             * @example johndoe
+             */
             'username' => ['required', 'string', 'max:100', 'unique:users,username'],
+
+            /**
+             * The user's password.
+             * @example secret123
+             */
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+
+            /**
+             * The user's phone number.
+             * @example +1234567890
+             */
             'phone'    => ['nullable', 'string', 'max:20'],
         ];
     }
@@ -34,24 +58,19 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre es requerido.',
-            'name.string' => 'El nombre debe ser una cadena de texto.',
-            'name.max' => 'El nombre debe tener como máximo 100 caracteres.',
-            'email.required' => 'El correo electrónico es requerido.',
-            'email.email' => 'El correo electrónico debe ser válido.',
-            'email.max' => 'El correo electrónico debe tener como máximo 150 caracteres.',
-            'email.unique' => 'El correo electrónico ya existe.',
-            'username.required' => 'El nombre de usuario es requerido.',
-            'username.string' => 'El nombre de usuario debe ser una cadena de texto.',
-            'username.max' => 'El nombre de usuario debe tener como máximo 100 caracteres.',
-            'username.unique' => 'El nombre de usuario ya existe.',
-            'password.required' => 'La contraseña es requerida.',
-            'password.string' => 'La contraseña debe ser una cadena de texto.',
-            'password.min' => 'La contraseña debe tener como mínimo 8 caracteres.',
-            'password.confirmed' => 'La contraseña no coincide.',
-            'phone.nullable' => 'El teléfono debe ser una cadena de texto.',
-            'phone.string' => 'El teléfono debe ser una cadena de texto.',
-            'phone.max' => 'El teléfono debe tener como máximo 20 caracteres.',
+            'name.required' => __('auth.name_required'),
+            'name.max' => __('auth.name_max'),
+            'email.required' => __('auth.email_required'),
+            'email.email' => __('auth.email_valid'),
+            'email.max' => __('auth.email_max'),
+            'email.unique' => __('auth.email_unique'),
+            'username.required' => __('auth.username_required'),
+            'username.max' => __('auth.username_max'),
+            'username.unique' => __('auth.username_unique'),
+            'password.required' => __('auth.password_required'),
+            'password.min' => __('auth.password_min'),
+            'password.confirmed' => __('auth.password_confirmed'),
+            'phone.max' => __('auth.phone_max'),
         ];
     }
 }

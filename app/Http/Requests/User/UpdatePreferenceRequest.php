@@ -24,17 +24,25 @@ class UpdatePreferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key'   => ['required', 'string', 'in:' . implode(',', array_keys(UserPreference::DEFAULTS))],
-            'value' => ['required', 'string', 'max:255'],
+            /**
+             * The preference key to update.
+             * @example language
+             */
+            'key'   => ['required', 'string'],
+
+            /**
+             * The preference value.
+             * @example en
+             */
+            'value' => ['required'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'key.required' => 'La clave de preferencia es obligatoria.',
-            'key.in'       => 'La clave de preferencia no es válida.',
-            'value.required' => 'El valor es obligatorio.',
+            'key.required'   => __('users.preference_key_required'),
+            'value.required' => __('users.preference_value_required'),
         ];
     }
 }

@@ -23,9 +23,27 @@ class UpdateGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The group name.
+             * @example Worship Team
+             */
             'name' => ['sometimes', 'string', 'max:100'],
+
+            /**
+             * A description of the group.
+             * @example The main worship team for the church.
+             */
             'description' => ['sometimes', 'string', 'max:1000'],
+
+            /**
+             * The hex color code for the group UI.
+             * @example #6366F1
+             */
             'color' => ['sometimes', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+
+            /**
+             * The avatar URL for the group.
+             */
             'avatar' => ['sometimes', 'string'],
         ];
     }
@@ -33,8 +51,8 @@ class UpdateGroupRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.sometimes' => 'El nombre del grupo es obligatorio.',
-            'color.regex'   => 'El color debe ser un código hexadecimal válido. Ej: #6366F1',
+            'name.sometimes' => __('groups.name_required'),
+            'color.regex'   => __('groups.color_regex'),
         ];
     }
 }

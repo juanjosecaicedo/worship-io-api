@@ -1,0 +1,18 @@
+<?php
+
+return [
+    'minutes_required' => 'Los minutos son obligatorios.',
+    'minutes_min' => 'El recordatorio debe ser al menos 5 minutos antes.',
+    'minutes_max' => 'El recordatorio no puede ser más de 2 semanas antes.',
+    'channel_required' => 'El canal es obligatorio.',
+    'channel_in' => 'El canal seleccionado no es válido.',
+    'marked_read' => 'Notificación marcada como leída.',
+    'all_marked_read' => 'Todas las notificaciones marcadas como leídas.',
+    'deleted_success' => 'Notificación eliminada correctamente.',
+    'read_deleted' => 'Notificaciones leídas eliminadas.',
+    'reminder_event_past' => 'No se pueden agregar recordatorios a eventos pasados.',
+    'reminder_exists' => 'Ya existe un recordatorio con estos mismos parámetros.',
+    'reminder_created' => 'Recordatorio creado correctamente.',
+    'reminder_deleted' => 'Recordatorio eliminado correctamente.',
+    'cannot_delete_sent_reminder' => 'No se puede eliminar un recordatorio ya enviado.',
+];

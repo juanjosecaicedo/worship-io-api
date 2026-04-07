@@ -24,9 +24,28 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The user's full name.
+             * @example John Doe
+             */
             'name' => ['sometimes', 'string', 'max:100'],
+
+            /**
+             * The user's phone number.
+             * @example +1234567890
+             */
             'phone' => ['nullable', 'string', 'max:20'],
+
+            /**
+             * The unique username.
+             * @example john_doe
+             */
             'username' => ['sometimes', 'string', 'max:100', Rule::unique('users')->ignore($this->user()->id)],
+
+            /**
+             * The user's email address.
+             * @example john@example.com
+             */
             'email' => [
                 'sometimes',
                 'email',
@@ -39,20 +58,16 @@ class UpdateProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.sometimes' => 'The name must be a string.',
-            'name.string' => 'The name must be a string.',
-            'name.max' => 'The name must be at most 100 characters.',
-            'phone.nullable' => 'The phone must be a string.',
-            'phone.string' => 'The phone must be a string.',
-            'phone.max' => 'The phone must be at most 20 characters.',
-            'email.sometimes' => 'The email must be a string.',
-            'email.email' => 'The email must be valid.',
-            'email.max' => 'The email must be at most 150 characters.',
-            'email.unique' => 'The email already exists.',
-            'username.sometimes' => 'The username must be a string.',
-            'username.string' => 'The username must be a string.',
-            'username.max' => 'The username must be at most 100 characters.',
-            'username.unique' => 'The username already exists.',
+            'name.string' => __('users.name_string'),
+            'name.max' => __('users.name_max'),
+            'phone.string' => __('users.phone_string'),
+            'phone.max' => __('users.phone_max'),
+            'email.email' => __('users.email_email'),
+            'email.max' => __('users.email_max'),
+            'email.unique' => __('users.email_unique'),
+            'username.string' => __('users.username_string'),
+            'username.max' => __('users.username_max'),
+            'username.unique' => __('users.username_unique'),
         ];
     }
 }

@@ -23,9 +23,28 @@ class UpdateMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The role of the member in the group.
+             * @example leader
+             */
             'role' => ['sometimes', 'in:admin,leader,vocalist,musician,choir,instrument,technician'],
+
+            /**
+             * The specific instrument played.
+             * @example Bass
+             */
             'instrument' => ['nullable', 'string', 'max:50'],
+
+            /**
+             * Date when the member joined the group.
+             * @example 2026-04-01
+             */
             'joined_at' => ['nullable', 'date'],
+
+            /**
+             * Whether the membership is active.
+             * @example true
+             */
             'is_active' => ['sometimes', 'boolean'],
         ];
     }
@@ -33,8 +52,8 @@ class UpdateMemberRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'role.sometimes' => 'El rol es obligatorio.',
-            'role.in' => 'El rol debe ser uno de los siguientes: admin, leader, vocalist, musician, choir, instrument, technician.',
+            'role.sometimes' => __('groups.role_required'),
+            'role.in' => __('groups.role_in'),
         ];
     }
 }

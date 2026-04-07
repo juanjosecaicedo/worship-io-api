@@ -23,9 +23,20 @@ class CreateSetlistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['sometimes', 'string', 'max:100'],
+            /**
+             * The name of the setlist.
+             * @example Sunday Service - Apr 06
+             */
+            'name' => ['required', 'string', 'max:150'],
             'notes'     => ['nullable', 'string'],
             'is_active' => ['sometimes', 'boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('setlists.setlist_name_required'),
         ];
     }
 }

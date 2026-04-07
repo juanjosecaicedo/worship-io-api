@@ -26,6 +26,17 @@ class EventController extends Controller
     /**
      * List all events of a group
      * 
+     * @queryParam from date The start date to filter events. Example: 2026-01-01
+     * @queryParam to date The end date to filter events. Example: 2026-12-31
+     * @queryParam type string Filter by event type.
+     * @queryParam status string Filter by event status.
+     * @queryParam month integer Filter by specific month (1-12).
+     * @queryParam year integer Filter by specific year.
+     * @queryParam upcoming boolean Show only upcoming events.
+     * @queryParam past boolean Show only past events.
+     * @queryParam per_page integer Number of items per page.
+     * @queryParam page integer The number of the page to return.
+     * 
      * @param ListEventsRequest $request
      * @param Group $group
      * @return JsonResponse
@@ -33,35 +44,6 @@ class EventController extends Controller
     public function index(ListEventsRequest $request, Group $group): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
-
-        /*
-        $query = Event::where('group_id', $group->id)
-            ->withCount('attendees')
-            ->with('creator');
-       
-        // Filtros
-        if ($request->filled('type')) {
-            $query->byType($request->type);
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('month') && $request->filled('year')) {
-            $query->byMonth($request->year, $request->month);
-        }
-
-        // Próximos o pasados
-        if ($request->boolean('upcoming')) {
-            $query->upcoming();
-        } elseif ($request->boolean('past')) {
-            $query->past();
-        } else {
-            $query->orderBy('start_datetime');
-        }
-         $events = $this->recurrenceService->getEventsInRange($group->id, $from, $to);    
-        */
 
         $from = $request->filled('from')
             ? Carbon::parse($request->from)->startOfDay()
@@ -71,8 +53,6 @@ class EventController extends Controller
             ? Carbon::parse($request->to)->endOfDay()
             : now()->endOfMonth();
 
-
-        //$events = $query->paginate($request->per_page ?? 20);
         $events = $this->recurrenceService->getEventsInRange($group->id, $from, $to);
 
         $perPage = $request->input('per_page', 20);
@@ -130,7 +110,7 @@ class EventController extends Controller
         $event->attendees()->insert($attendees);
 
         return response()->json([
-            'message' => 'Evento creado correctamente.',
+            'message' => __('events.created_success'),
             'data' => new EventResource($event->load('creator', 'attendees.user')),
         ], 201);
     }
@@ -176,7 +156,7 @@ class EventController extends Controller
         $event->update($request->validated());
 
         return response()->json([
-            'message' => 'Evento actualizado correctamente.',
+            'message' => __('events.updated_success'),
             'data' => new EventResource($event->load('creator', 'roles.user')),
         ]);
     }
@@ -197,7 +177,7 @@ class EventController extends Controller
         $event->update(['status' => 'cancelled']);
 
         return response()->json([
-            'message' => 'Evento cancelado correctamente.',
+            'message' => __('events.cancelled_success'),
         ]);
     }
 
@@ -233,7 +213,7 @@ class EventController extends Controller
         $event = $this->recurrenceService->createRecurring($eventData, $recurrenceData);
 
         return response()->json([
-            'message' => 'Evento recurrente creado correctamente.',
+            'message' => __('events.recurring_created_success'),
             'data'    => new EventResource($event),
         ], 201);
     }
@@ -261,7 +241,7 @@ class EventController extends Controller
 
         if ($existing) {
             return response()->json([
-                'message' => 'Esta ocurrencia ya fue materializada.',
+                'message' => __('events.occurrence_already_materialized'),
                 'data'    => new EventResource($existing),
             ]);
         }
@@ -269,7 +249,7 @@ class EventController extends Controller
         $event = $this->recurrenceService->materialize($recurrence, $date);
 
         return response()->json([
-            'message' => 'Ocurrencia lista para editar.',
+            'message' => __('events.occurrence_ready'),
             'data'    => new EventResource($event->load('roles.user', 'attendees.user')),
         ], 201);
     }
@@ -310,7 +290,7 @@ class EventController extends Controller
         };
 
         return response()->json([
-            'message' => 'Ocurrencia actualizada correctamente.',
+            'message' => __('events.occurrence_updated'),
         ]);
     }
 

@@ -28,7 +28,7 @@ class SetlistSongController extends Controller
 
         // Verify that the song belongs to the group
         $songBelongsToGroup = $group->id === GroupSong::find($request->group_song_id)?->group_id;
-        abort_unless($songBelongsToGroup, 422, 'The song does not belong to this group.');
+        abort_unless($songBelongsToGroup, 422, __('setlists.song_not_belongs_to_group'));
 
         // Verify that the song is not duplicated in the setlist
         $exists = $setlist->songs()
@@ -37,20 +37,22 @@ class SetlistSongController extends Controller
 
         if ($exists) {
             return response()->json([
-                'message' => 'This song is already in the setlist.',
+                'message' => __('setlists.song_already_in_setlist'),
             ], 409);
         }
 
         $setlistSong = $setlist->songs()->create($request->validated());
 
         return response()->json([
-            'message' => 'Song added to setlist successfully.',
+            'message' => __('setlists.song_added_success'),
             'data' => new SetlistSongResource($setlistSong->load('groupSong')),
         ], 201);
     }
 
     /**
      * Update setlist song
+     * 
+     * Updates override settings like key or duration for a song in a setlist.
      */
     public function update(
         UpdateSetlistSongRequest $request,
@@ -67,7 +69,7 @@ class SetlistSongController extends Controller
         $setlistSong->update($request->validated());
 
         return response()->json([
-            'message' => 'Setlist song updated successfully.',
+            'message' => __('setlists.song_updated_success'),
             'data' => new SetlistSongResource($setlistSong->load('groupSong', 'vocalists.user')),
         ]);
     }
@@ -88,7 +90,7 @@ class SetlistSongController extends Controller
         }
 
         return response()->json([
-            'message' => 'Setlist reordered successfully.',
+            'message' => __('setlists.reordered_success'),
             'data' => SetlistSongResource::collection(
                 $setlist->songs()->with('groupSong')->get()
             ),
@@ -96,7 +98,7 @@ class SetlistSongController extends Controller
     }
 
     /**
-     * Delete setlist song
+     * Remove song from setlist
      */
     public function destroy(
         Request $request,
@@ -113,7 +115,7 @@ class SetlistSongController extends Controller
         $setlistSong->delete();
 
         return response()->json([
-            'message' => 'Song deleted from setlist successfully.',
+            'message' => __('setlists.song_removed_success'),
         ]);
     }
 }

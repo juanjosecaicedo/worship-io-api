@@ -23,8 +23,22 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The user's email address.
+             * @example john@example.com
+             */
             'email'       => ['required', 'email'],
+
+            /**
+             * The user's password.
+             * @example secret123
+             */
             'password'    => ['required', 'string'],
+
+            /**
+             * The name of the device making the request.
+             * @example iPhone 15
+             */
             'device_name' => ['nullable', 'string', 'max:100'],
         ];
     }
@@ -32,8 +46,8 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required'    => 'El correo electrónico es obligatorio.',
-            'password.required' => 'La contraseña es obligatoria.',
+            'email.required'    => __('auth.email_required'),
+            'password.required' => __('auth.password_required'),
         ];
     }
 }

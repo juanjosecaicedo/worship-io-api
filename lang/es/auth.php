@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'email_required' => 'El correo electrónico es obligatorio.',
+    'email_valid' => 'El correo electrónico debe ser una dirección válida.',
+    'email_max' => 'El correo electrónico no debe exceder los 150 caracteres.',
+    'email_unique' => 'El correo electrónico ya está en uso.',
+    'password_required' => 'La contraseña es obligatoria.',
+    'password_min' => 'La contraseña debe tener al menos 8 caracteres.',
+    'password_confirmed' => 'La confirmación de la contraseña no coincide.',
+    'name_required' => 'El nombre es obligatorio.',
+    'name_max' => 'El nombre no debe exceder los 100 caracteres.',
+    'username_required' => 'El nombre de usuario es obligatorio.',
+    'username_max' => 'El nombre de usuario no debe exceder los 100 caracteres.',
+    'username_unique' => 'El nombre de usuario ya está en uso.',
+    'id_token_required' => 'El token de Google es obligatorio.',
+    'phone_max' => 'El teléfono no debe exceder los 20 caracteres.',
+    'device_name_max' => 'El nombre del dispositivo no debe exceder los 100 caracteres.',
+    'invalid_credentials' => 'Las credenciales son incorrectas.',
+    'register_success' => 'Registro exitoso.',
+    'login_success' => 'Inicio de sesión exitoso.',
+    'logout_success' => 'Cierre de sesión exitoso.',
+    'google_login_success' => 'Inicio de sesión con Google exitoso.',
+    'account_deactivated' => 'Esta cuenta ha sido desactivada.',
+    'account_disabled' => 'Esta cuenta está deshabilitada.',
+];

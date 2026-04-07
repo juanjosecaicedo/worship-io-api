@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 class GroupSongController extends Controller
 {
     /**
-     * List songs by the group
+     * List group songs
+     * 
+     * Returns all songs personalized for the specified group.
      */
     public function index(Request $request, Group $group): JsonResponse
     {
@@ -48,7 +50,9 @@ class GroupSongController extends Controller
     }
 
     /**
-     * Create a new song for the group
+     * Create a group song
+     * 
+     * Creates a new song specific to the group.
      */
     public function store(CreateGroupSongRequest $request, Group $group): JsonResponse
     {
@@ -67,13 +71,15 @@ class GroupSongController extends Controller
         }
 
         return response()->json([
-            'message' => 'Song created successfully.',
+            'message' => __('group_songs.created_success'),
             'data' => new GroupSongResource($song->load('sections', 'creator')),
         ], 201);
     }
 
     /**
-     * Fork a global song for the group
+     * Personalize a global song
+     * 
+     * Creates a copy of a global song into the group's library to allow customization.
      */
     public function fork(ForkGlobalSongRequest $request, Group $group, GlobalSong $globalSong): JsonResponse
     {
@@ -86,7 +92,7 @@ class GroupSongController extends Controller
 
         if ($exists) {
             return response()->json([
-                'message' => 'This song has already been personalized for this group.',
+                'message' => __('group_songs.already_forked'),
             ], 409);
         }
 
@@ -119,13 +125,13 @@ class GroupSongController extends Controller
         }
 
         return response()->json([
-            'message' => 'Song personalized successfully.',
+            'message' => __('group_songs.forked_success'),
             'data' => new GroupSongResource($song->load('sections', 'globalSong')),
         ], 201);
     }
 
     /**
-     * Show a song by the group
+     * Get group song details
      */
     public function show(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -145,7 +151,7 @@ class GroupSongController extends Controller
     }
 
     /**
-     * Update a song by the group
+     * Update a group song
      */
     public function update(UpdateGroupSongRequest $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -155,13 +161,13 @@ class GroupSongController extends Controller
         $groupSong->update($request->validated());
 
         return response()->json([
-            'message' => 'Song updated successfully.',
+            'message' => __('group_songs.updated_success'),
             'data' => new GroupSongResource($groupSong->load('sections')),
         ]);
     }
 
     /**
-     * Delete a song by the group
+     * Delete a group song
      */
     public function destroy(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -171,7 +177,7 @@ class GroupSongController extends Controller
         $groupSong->delete();
 
         return response()->json([
-            'message' => 'Song deleted successfully.',
+            'message' => __('group_songs.deleted_success'),
         ]);
     }
 }

@@ -19,9 +19,10 @@ class AuthController extends Controller
 {
     /**
      * Register a new user
+     * 
+     * Creates a new user account and returns an authentication token.
+     * 
      * @unauthenticated
-     * @param RegisterRequest $request
-     * @return JsonResponse
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -36,7 +37,7 @@ class AuthController extends Controller
         $token = $user->createToken($request->device_name ?? 'worship-io-app')->plainTextToken;
 
         return response()->json([
-            'message' => 'Successfully registered user.',
+            'message' => __('auth.register_success'),
             'data' => new UserResource($user),
             'token' => $token,
         ], 201);
@@ -44,9 +45,10 @@ class AuthController extends Controller
 
     /**
      * Login a user
+     * 
+     * Authenticates a user with email and password and returns a Sanctum token.
+     * 
      * @unauthenticated
-     * @param LoginRequest $request
-     * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -54,26 +56,27 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The credentials are incorrect.'],
+                'email' => [__('auth.invalid_credentials')],
             ]);
         }
 
         if (! $user->is_active) {
             return response()->json([
-                'message' => 'Your account is deactivated. Contact the administrator.',
+                'message' => __('auth.account_deactivated'),
             ], 403);
         }
 
         // Update last login
         $user->update(['last_login_at' => now()]);
 
-        // Revoke all tokens of the user
-        $user->tokens()->where('name', $request->device_name ?? 'worship-io-app')->delete();
+        // Revoke all tokens of the user from the same device
+        $deviceName = $request->device_name ?? 'worship-io-app';
+        $user->tokens()->where('name', $deviceName)->delete();
 
-        $token = $user->createToken($request->device_name ?? 'worship-io-app')->plainTextToken;
+        $token = $user->createToken($deviceName)->plainTextToken;
 
         return response()->json([
-            'message' => 'Successfully logged in.',
+            'message' => __('auth.login_success'),
             'data' => new UserResource($user),
             'token' => $token,
         ]);
@@ -81,8 +84,8 @@ class AuthController extends Controller
 
     /**
      * Logout a user
-     * @param Request $request
-     * @return JsonResponse
+     * 
+     * Revokes the current access token.
      */
     public function logout(Request $request): JsonResponse
     {
@@ -93,15 +96,16 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Successfully logged out.',
+            'message' => __('auth.logout_success'),
         ]);
     }
 
     /**
-     * Login a user with Google
+     * Login with Google
+     * 
+     * Authenticates or creates a user using a Google ID token.
+     * 
      * @unauthenticated
-     * @param GoogleLoginRequest $request
-     * @return JsonResponse
      */
     public function googleLogin(
         GoogleLoginRequest $request,
@@ -115,7 +119,7 @@ class AuthController extends Controller
 
         if (! $user->is_active) {
             return response()->json([
-                'message' => 'Your account is disabled.',
+                'message' => __('auth.account_disabled'),
             ], 403);
         }
 
@@ -127,7 +131,7 @@ class AuthController extends Controller
         $token = $user->createToken($deviceName)->plainTextToken;
 
         return response()->json([
-            'message'      => 'Session started with Google.',
+            'message'      => __('auth.google_login_success'),
             'data'         => new UserResource($user->load('vocalProfile')),
             'token'        => $token,
             'is_new_user'  => is_null($user->getOriginal('google_id')),
@@ -136,7 +140,9 @@ class AuthController extends Controller
 
 
     /**
-     * Get current user
+     * Get current user profile
+     * 
+     * Returns detailed information about the authenticated user.
      */
     public function me(Request $request): JsonResponse
     {

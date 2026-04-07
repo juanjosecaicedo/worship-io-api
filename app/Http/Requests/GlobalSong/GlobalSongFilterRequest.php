@@ -25,10 +25,34 @@ class GlobalSongFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * Search by title or author.
+             * @example Amazing Grace
+             */
             'search'  => ['nullable', 'string', 'max:100'],
+
+            /**
+             * Filter by original key.
+             * @example G
+             */
             'key'     => ['nullable', 'string', Rule::in(GlobalSong::VALID_KEYS)],
+
+            /**
+             * Filter by genre.
+             * @example Hymn
+             */
             'genre'   => ['nullable', 'string', 'max:50'],
+
+            /**
+             * Filter by tag.
+             * @example worship
+             */
             'tag'     => ['nullable', 'string', 'max:30'],
+
+            /**
+             * Number of items per page.
+             * @example 15
+             */
             'per_page' => ['nullable', 'integer', 'min:5', 'max:100'],
         ];
     }
@@ -36,9 +60,9 @@ class GlobalSongFilterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'key.in'      => 'La tonalidad no es válida.',
-            'per_page.min' => 'La cantidad de canciones por página debe ser al menos 5.',
-            'per_page.max' => 'La cantidad de canciones por página no puede exceder 100.',
+            'key.in'      => __('global_songs.original_key_in'),
+            'per_page.min' => __('global_songs.per_page_min'),
+            'per_page.max' => __('global_songs.per_page_max'),
         ];
     }
 }

@@ -23,9 +23,28 @@ class AddMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The user ID to add to the group.
+             * @example 1
+             */
             'user_id' => ['required', 'exists:users,id'],
+
+            /**
+             * The role of the member in the group.
+             * @example leader
+             */
             'role' => ['required', 'in:admin,leader,vocalist,musician,choir,instrument,technician'],
+
+            /**
+             * The specific instrument played (if applicable).
+             * @example Guitar
+             */
             'instrument' => ['nullable', 'string', 'max:50'],
+
+            /**
+             * Date when the member joined the group.
+             * @example 2026-04-01
+             */
             'joined_at' => ['nullable', 'date'],
         ];
     }
@@ -33,10 +52,10 @@ class AddMemberRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'El usuario es obligatorio.',
-            'user_id.exists' => 'El usuario no existe.',
-            'role.required' => 'El rol es obligatorio.',
-            'role.in' => 'El rol debe ser uno de los siguientes: admin, leader, vocalist, musician, choir, instrument, technician.',
+            'user_id.required' => __('groups.member_id_required'),
+            'user_id.exists' => __('groups.member_id_exists'),
+            'role.required' => __('groups.role_required'),
+            'role.in' => __('groups.role_in'),
         ];
     }
 }

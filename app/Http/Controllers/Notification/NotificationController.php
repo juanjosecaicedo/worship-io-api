@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 class NotificationController extends Controller
 {
     /**
-     * Summary of index
+     * List user notifications
+     * 
+     * Returns a paginated list of notifications for the authenticated user.
      */
     public function index(Request $request): JsonResponse
     {
@@ -39,7 +41,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Mark a notification as read
+     * Mark notification as read
      */
     public function markAsRead(Request $request, Notification $notification): JsonResponse
     {
@@ -48,7 +50,7 @@ class NotificationController extends Controller
         $notification->markAsRead();
 
         return response()->json([
-            'message' => 'Notification marked as read.',
+            'message' => __('notifications.marked_read'),
             'data' => new NotificationResource($notification),
         ]);
     }
@@ -63,7 +65,7 @@ class NotificationController extends Controller
             ->update(['read_at' => now()]);
 
         return response()->json([
-            'message' => 'All notifications marked as read.',
+            'message' => __('notifications.all_marked_read'),
         ]);
     }
 
@@ -77,7 +79,7 @@ class NotificationController extends Controller
         $notification->delete();
 
         return response()->json([
-            'message' => 'Notification deleted successfully.',
+            'message' => __('notifications.deleted_success'),
         ]);
     }
 
@@ -91,7 +93,7 @@ class NotificationController extends Controller
             ->delete();
 
         return response()->json([
-            'message' => 'Notificaciones leídas eliminadas.',
+            'message' => __('notifications.read_deleted'),
         ]);
     }
 }

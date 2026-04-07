@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class SongNoteController extends Controller
 {
     /**
-     * List user notes for a song
+     * List my notes for a song
+     * 
+     * Returns personal notes for a specific song within a group context.
      */
     public function index(Request $request, Group $group, GroupSong $groupSong): JsonResponse
     {
@@ -31,6 +33,9 @@ class SongNoteController extends Controller
         ]);
     }
 
+    /**
+     * Create a song note
+     */
     public function store(StoreSongNoteRequest $request, Group $group, GroupSong $groupSong): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
@@ -43,33 +48,39 @@ class SongNoteController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Note created successfully.',
+            'message' => __('group_songs.note_created_success'),
             'data' => new SongNoteResource($note->load('section')),
         ], 201);
     }
 
+    /**
+     * Update a song note
+     */
     public function update(StoreSongNoteRequest $request, Group $group, GroupSong $groupSong, SongNote $note): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
-        abort_if($note->user_id !== $request->user()->id, 403, 'You can only edit your own notes.');
+        abort_if($note->user_id !== $request->user()->id, 403, __('group_songs.only_owner_edit_note'));
 
         $note->update($request->validated());
 
         return response()->json([
-            'message' => 'Note updated successfully.',
+            'message' => __('group_songs.note_updated_success'),
             'data' => new SongNoteResource($note),
         ]);
     }
 
+    /**
+     * Delete a song note
+     */
     public function destroy(Request $request, Group $group, GroupSong $groupSong, SongNote $note): JsonResponse
     {
         abort_unless($group->hasMember($request->user()->id), 403);
-        abort_if($note->user_id !== $request->user()->id, 403, 'You can only delete your own notes.');
+        abort_if($note->user_id !== $request->user()->id, 403, __('group_songs.only_owner_delete_note'));
 
         $note->delete();
 
         return response()->json([
-            'message' => 'Note deleted successfully.',
+            'message' => __('group_songs.note_deleted_success'),
         ]);
     }
 }

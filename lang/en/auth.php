@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'email_required' => 'The email is required.',
+    'email_valid' => 'The email must be a valid email address.',
+    'email_max' => 'The email may not be greater than 150 characters.',
+    'email_unique' => 'The email has already been taken.',
+    'password_required' => 'The password is required.',
+    'password_min' => 'The password must be at least 8 characters.',
+    'password_confirmed' => 'The password confirmation does not match.',
+    'name_required' => 'The name is required.',
+    'name_max' => 'The name may not be greater than 100 characters.',
+    'username_required' => 'The username is required.',
+    'username_max' => 'The username may not be greater than 100 characters.',
+    'username_unique' => 'The username has already been taken.',
+    'id_token_required' => 'Google token is required.',
+    'phone_max' => 'The phone may not be greater than 20 characters.',
+    'invalid_credentials' => 'The credentials are incorrect.',
+    'register_success' => 'Registration successful.',
+    'login_success' => 'Login successful.',
+    'logout_success' => 'Logout successful.',
+    'google_login_success' => 'Google login successful.',
+    'account_deactivated' => 'This account has been deactivated.',
+    'account_disabled' => 'This account is disabled.',
+];

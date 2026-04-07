@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name_string' => 'The name must be a string.',
+    'name_max' => 'The name may not be greater than 100 characters.',
+    'phone_string' => 'The phone must be a string.',
+    'phone_max' => 'The phone may not be greater than 20 characters.',
+    'username_string' => 'The username must be a string.',
+    'username_max' => 'The username may not be greater than 100 characters.',
+    'username_unique' => 'The username has already been taken.',
+    'email_email' => 'The email must be a valid email address.',
+    'email_max' => 'The email may not be greater than 150 characters.',
+    'email_unique' => 'The email has already been taken.',
+    'preference_key_required' => 'The preference key is required.',
+    'preference_value_required' => 'The preference value is required.',
+    'preferences_array' => 'The preferences must be an array.',
+    'vocal_type_in' => 'The selected vocal type is invalid.',
+    'profile_updated' => 'Profile updated successfully.',
+    'vocal_profile_updated' => 'Vocal profile updated successfully.',
+    'account_deactivated' => 'Account deactivated successfully.',
+    'preference_updated' => 'Preference updated successfully.',
+    'bulk_preferences_updated' => ':count preference(s) updated successfully.',
+    'preference_reset' => 'Preference reset to default value.',
+    'all_preferences_reset' => 'All preferences reset to default values.',
+    'invalid_preference_key' => 'Invalid preference key.',
+];

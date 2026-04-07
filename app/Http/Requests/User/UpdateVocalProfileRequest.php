@@ -23,11 +23,30 @@ class UpdateVocalProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'voice_type'      => ['nullable', 'in:soprano,mezzo_soprano,alto,contralto,tenor,baritone,bass'],
-            'comfortable_key' => ['nullable', 'string', 'max:5'],
-            'range_min'       => ['nullable', 'string', 'max:5'],
-            'range_max'       => ['nullable', 'string', 'max:5'],
-            'notes'           => ['nullable', 'string'],
+            /**
+             * The user's vocal type.
+             * @example Tenor
+             */
+            'vocal_type' => ['required', 'string', 'in:Soprano,Mezzo-Soprano,Alto,Tenor,Baritone,Bass'],
+
+            /**
+             * Whether the user can do lead vocals.
+             * @example true
+             */
+            'can_lead'   => ['sometimes', 'boolean'],
+
+            /**
+             * Whether the user can do harmony.
+             * @example true
+             */
+            'can_harmony' => ['sometimes', 'boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'vocal_type.in' => __('users.vocal_type_in'),
         ];
     }
 }

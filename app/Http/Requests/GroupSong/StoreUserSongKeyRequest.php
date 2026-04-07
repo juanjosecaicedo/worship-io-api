@@ -25,8 +25,21 @@ class StoreUserSongKeyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The user's preferred key for this song.
+             * @example G
+             */
             'preferred_key' => ['required', 'string', Rule::in(GlobalSong::VALID_KEYS)],
+
+            /**
+             * Capo position.
+             * @example 2
+             */
             'capo'          => ['nullable', 'integer', 'min:0', 'max:12'],
+
+            /**
+             * Personal notes about the key or capo.
+             */
             'notes'         => ['nullable', 'string'],
         ];
     }
@@ -34,9 +47,9 @@ class StoreUserSongKeyRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'preferred_key.required' => 'El tono preferido es obligatorio.',
-            'preferred_key.in'       => 'La tonalidad no es válida.',
-            'capo.max'               => 'El capo no puede superar el traste 12.',
+            'preferred_key.required' => __('group_songs.preferred_key_required'),
+            'preferred_key.in'       => __('group_songs.custom_key_in'),
+            'capo.max'               => __('group_songs.capo_max'),
         ];
     }
 }

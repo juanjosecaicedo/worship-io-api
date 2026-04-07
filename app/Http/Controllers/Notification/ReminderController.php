@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class ReminderController extends Controller
 {
     /**
-     * List reminders for an event
+     * List reminders
+     * 
+     * Returns all reminders for a specific event within a group.
      */
     public function index(Request $request, Group $group, Event $event): JsonResponse
     {
@@ -32,7 +34,7 @@ class ReminderController extends Controller
     }
 
     /**
-     * Create a reminder for an event
+     * Create reminder
      */
     public function store(CreateReminderRequest $request, Group $group, Event $event): JsonResponse
     {
@@ -43,7 +45,7 @@ class ReminderController extends Controller
         abort_if(
             $event->start_datetime->isPast(),
             422,
-            'No se pueden agregar recordatorios a eventos pasados.'
+            __('notifications.reminder_event_past')
         );
 
         // Verificar que no exista ya el mismo recordatorio
@@ -54,7 +56,7 @@ class ReminderController extends Controller
 
         if ($exists) {
             return response()->json([
-                'message' => 'Ya existe un recordatorio con estos mismos parámetros.',
+                'message' => __('notifications.reminder_exists'),
             ], 409);
         }
 
@@ -64,25 +66,25 @@ class ReminderController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Recordatorio creado correctamente.',
+            'message' => __('notifications.reminder_created'),
             'data' => new ReminderResource($reminder),
         ], 201);
     }
 
     /**
-     * Delete a reminder
+     * Delete reminder
      */
     public function destroy(Request $request, Group $group, Event $event, Reminder $reminder): JsonResponse
     {
         abort_unless($group->isAdminOrLeader($request->user()->id), 403);
         abort_if($event->group_id !== $group->id, 404);
         abort_if($reminder->event_id !== $event->id, 404);
-        abort_if($reminder->is_sent, 422, 'No se puede eliminar un recordatorio ya enviado.');
+        abort_if($reminder->is_sent, 422, __('notifications.cannot_delete_sent_reminder'));
 
         $reminder->delete();
 
         return response()->json([
-            'message' => 'Recordatorio eliminado correctamente.',
+            'message' => __('notifications.reminder_deleted'),
         ]);
     }
 }

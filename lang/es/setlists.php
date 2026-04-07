@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'song_id_required' => 'La canción es obligatoria.',
+    'song_id_exists' => 'La canción seleccionada no existe.',
+    'order_required' => 'El orden es obligatorio.',
+    'order_min' => 'El orden debe ser al menos 0.',
+    'key_override_in' => 'La tonalidad no es válida.',
+    'duration_min' => 'La duración debe ser al menos 1 segundo.',
+    'setlist_name_required' => 'El nombre del setlist es obligatorio.',
+    'setlist_name_max' => 'El nombre no debe exceder los 150 caracteres.',
+    'vocalist_id_required' => 'El ID del vocalista es obligatorio.',
+    'vocalist_id_exists' => 'El usuario seleccionado no es miembro del grupo.',
+    'created_success' => 'Setlist creado correctamente.',
+    'updated_success' => 'Setlist actualizado correctamente.',
+    'deleted_success' => 'Setlist eliminado correctamente.',
+    'song_added_success' => 'Canción añadida al setlist correctamente.',
+    'song_updated_success' => 'Canción del setlist actualizada correctamente.',
+    'song_removed_success' => 'Canción eliminada del setlist correctamente.',
+    'vocalist_added_success' => 'Vocalista asignado correctamente.',
+    'vocalist_removed_success' => 'Vocalista eliminado correctamente.',
+    'song_not_belongs_to_group' => 'La canción no pertenece a este grupo.',
+    'song_already_in_setlist' => 'Esta canción ya está en el setlist.',
+    'reordered_success' => 'Setlist reordenado correctamente.',
+];

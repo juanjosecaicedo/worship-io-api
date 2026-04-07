@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class SetlistVocalistController extends Controller
 {
     /**
-     * Assign vocalist to a song in the setlist
+     * Assign vocalist
      */
     public function store(
         AssignVocalistRequest $request,
@@ -34,7 +34,7 @@ class SetlistVocalistController extends Controller
         abort_unless(
             $group->hasMember($request->user_id),
             422,
-            'The user is not a member of this group.'
+            __('setlists.user_not_group_member')
         );
 
         // Verify that the vocalist is not duplicated
@@ -45,7 +45,7 @@ class SetlistVocalistController extends Controller
 
         if ($exists) {
             return response()->json([
-                'message' => 'This vocalist already has this role in this song.',
+                'message' => __('setlists.vocalist_role_exists'),
             ], 409);
         }
 
@@ -67,7 +67,7 @@ class SetlistVocalistController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Vocalist assigned successfully.',
+            'message' => __('setlists.vocalist_added_success'),
             'data' => new SetlistVocalistResource($vocalist->load('user')),
         ], 201);
     }
@@ -92,7 +92,7 @@ class SetlistVocalistController extends Controller
         $vocalist->update($request->validated());
 
         return response()->json([
-            'message' => 'Vocalist assignment updated successfully.',
+            'message' => __('setlists.vocalist_assignment_updated'),
             'data' => new SetlistVocalistResource($vocalist->load('user')),
         ]);
     }
@@ -117,7 +117,7 @@ class SetlistVocalistController extends Controller
         $vocalist->delete();
 
         return response()->json([
-            'message' => 'Vocalist removed from song successfully.',
+            'message' => __('setlists.vocalist_removed_success'),
         ]);
     }
 }

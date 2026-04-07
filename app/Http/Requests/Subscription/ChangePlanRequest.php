@@ -23,7 +23,19 @@ class ChangePlanRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The slug of the new plan.
+             * @example premium-annual
+             */
             'plan_slug' => ['required', 'exists:subscription_plans,slug'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'plan_slug.required' => __('subscriptions.plan_slug_required'),
+            'plan_slug.exists'   => __('subscriptions.plan_slug_exists'),
         ];
     }
 }

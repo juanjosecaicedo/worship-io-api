@@ -23,7 +23,16 @@ class CreateReminderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'minutes_before' => ['required', 'integer', 'min:5', 'max:20160'], // max 2 semanas
+            /**
+             * Minutes before the event to send the reminder.
+             * @example 30
+             */
+            'minutes_before' => ['required', 'integer', 'min:5', 'max:20160'],
+
+            /**
+             * The channel to send the notification through.
+             * @example push
+             */
             'channel'        => ['required', 'in:push,email,sms,in_app,whatsapp,both'],
         ];
     }
@@ -31,11 +40,11 @@ class CreateReminderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'minutes_before.required' => 'Los minutos son obligatorios.',
-            'minutes_before.min'      => 'El recordatorio debe ser al menos 5 minutos antes.',
-            'minutes_before.max'      => 'El recordatorio no puede ser más de 2 semanas antes.',
-            'channel.required'        => 'El canal es obligatorio.',
-            'channel.in'              => 'El canal debe ser: push, email o both.',
+            'minutes_before.required' => __('notifications.minutes_required'),
+            'minutes_before.min'      => __('notifications.minutes_min'),
+            'minutes_before.max'      => __('notifications.minutes_max'),
+            'channel.required'        => __('notifications.channel_required'),
+            'channel.in'              => __('notifications.channel_in'),
         ];
     }
 }

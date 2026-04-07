@@ -25,20 +25,27 @@ class AssignVocalistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'      => ['required', 'exists:users,id'],
-            'vocal_role'   => ['required', 'in:lead,harmony,choir'],
-            'key_override' => ['nullable', 'string', Rule::in(GlobalSong::VALID_KEYS)],
-            'notes'        => ['nullable', 'string', 'max:255'],
+            /**
+             * The ID of the group member to assign.
+             * @example 5
+             */
+            'group_member_id' => [
+                'required',
+                Rule::exists('group_members', 'id')->where('group_id', $this->route('group')->id)
+            ],
+
+            /**
+             * Notes for the vocalist.
+             */
+            'notes'           => ['nullable', 'string'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'user_id.required'    => 'El vocalista es obligatorio.',
-            'user_id.exists'      => 'El usuario no existe.',
-            'vocal_role.required' => 'El rol vocal es obligatorio.',
-            'vocal_role.in'       => 'El rol debe ser: lead, harmony o choir.',
+            'group_member_id.required' => __('setlists.vocalist_id_required'),
+            'group_member_id.exists'   => __('setlists.vocalist_id_exists'),
         ];
     }
 }

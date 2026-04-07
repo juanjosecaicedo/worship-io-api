@@ -15,7 +15,9 @@ use Illuminate\Http\Request;
 class SetlistController extends Controller
 {
     /**
-     * List setlists for the event
+     * List setlists
+     * 
+     * Returns all setlists for an event.
      */
     public function index(Request $request, Group $group, Event $event): JsonResponse
     {
@@ -33,7 +35,7 @@ class SetlistController extends Controller
     }
 
     /**
-     * Create setlist for the event
+     * Create setlist
      */
     public function store(CreateSetlistRequest $request, Group $group, Event $event): JsonResponse
     {
@@ -47,13 +49,15 @@ class SetlistController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Setlist created successfully.',
+            'message' => __('setlists.created_success'),
             'data' => new SetlistResource($setlist->load('creator')),
         ], 201);
     }
 
     /**
-     * See the full setlist with all songs and vocalists
+     * Get setlist details
+     * 
+     * Returns full setlist information including songs and assigned vocalists.
      */
     public function show(Request $request, Group $group, Event $event, Setlist $setlist): JsonResponse
     {
@@ -84,7 +88,7 @@ class SetlistController extends Controller
         $setlist->update($request->validated());
 
         return response()->json([
-            'message' => 'Setlist updated successfully.',
+            'message' => __('setlists.updated_success'),
             'data' => new SetlistResource($setlist->fresh('creator')),
         ]);
     }
@@ -101,7 +105,7 @@ class SetlistController extends Controller
         $setlist->delete();
 
         return response()->json([
-            'message' => 'Setlist deleted successfully.',
+            'message' => __('setlists.deleted_success'),
         ]);
     }
 }

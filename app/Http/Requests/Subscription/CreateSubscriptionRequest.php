@@ -23,7 +23,16 @@ class CreateSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * The slug of the plan to subscribe to.
+             * @example premium-monthly
+             */
             'plan_slug' => ['required', 'exists:subscription_plans,slug'],
+
+            /**
+             * The payment gateway to use.
+             * @example stripe
+             */
             'gateway'   => ['sometimes', 'in:stripe,mercadopago'],
         ];
     }
@@ -31,8 +40,8 @@ class CreateSubscriptionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'plan_slug.required' => 'El plan es obligatorio.',
-            'plan_slug.exists'   => 'El plan seleccionado no existe.',
+            'plan_slug.required' => __('subscriptions.plan_slug_required'),
+            'plan_slug.exists'   => __('subscriptions.plan_slug_exists'),
         ];
     }
 }
