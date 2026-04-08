@@ -49,7 +49,7 @@ class RegisterRequest extends FormRequest
 
             /**
              * The user's phone number.
-             * @example +1234567890
+             * @example +573123456789
              */
             'phone'    => ['nullable', 'string', 'max:20'],
         ];

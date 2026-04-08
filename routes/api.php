@@ -29,6 +29,9 @@ Route::prefix('v1/auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('google', [AuthController::class, 'googleLogin']);
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('verify-code', [AuthController::class, 'verifyCode']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // ─── Webhooks (sin auth) ──────────────────────────────────

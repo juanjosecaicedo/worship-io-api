@@ -13,6 +13,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\VerifyCodeRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Mail\PasswordResetCodeMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -82,6 +88,94 @@ class AuthController extends Controller
             'token' => $token,
         ]);
     }
+
+    /**
+     * Send password reset code
+     * 
+     * Generates a 6-digit code and sends it to the user's email.
+     * 
+     * @unauthenticated
+     */
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => $code,
+                'created_at' => now(),
+            ]
+        );
+
+        Mail::to($request->email)->send(new PasswordResetCodeMail($code));
+
+        return response()->json([
+            'message' => __('auth.password_reset_code_sent'),
+        ]);
+    }
+
+    /**
+     * Verify reset code
+     * 
+     * Checks if the provided 6-digit code is valid and not expired.
+     * 
+     * @unauthenticated
+     */
+    public function verifyCode(VerifyCodeRequest $request): JsonResponse
+    {
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->code)
+            ->first();
+
+        if (!$record || now()->parse($record->created_at)->addMinutes(60)->isPast()) {
+            throw ValidationException::withMessages([
+                'code' => [__('auth.invalid_reset_code')],
+            ]);
+        }
+
+        return response()->json([
+            'message' => __('auth.code_verified_success'),
+        ]);
+    }
+
+    /**
+     * Reset password
+     * 
+     * Resets the user's password using the verified 6-digit code.
+     * 
+     * @unauthenticated
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->code)
+            ->first();
+
+        if (!$record || now()->parse($record->created_at)->addMinutes(60)->isPast()) {
+            throw ValidationException::withMessages([
+                'code' => [__('auth.invalid_reset_code')],
+            ]);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Revoke all tokens of the user to force relogin
+        $user->tokens()->delete();
+
+        // Delete the reset token
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return response()->json([
+            'message' => __('auth.password_reset_success'),
+        ]);
+    }
+
 
     /**
      * Logout a user
