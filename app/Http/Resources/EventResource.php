@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
+
 
 class EventResource extends JsonResource
 {
@@ -20,10 +22,17 @@ class EventResource extends JsonResource
             'type'           => $this->type,
             'description'    => $this->description,
             'location'       => $this->location,
-            'start_datetime' => $this->start_datetime->toDateTimeString(),
-            'end_datetime'   => $this->end_datetime->toDateTimeString(),
+            'start_datetime' => $this->start_datetime instanceof \Carbon\Carbon
+                ? $this->start_datetime->toDateTimeString()
+                : $this->start_datetime,
+            'end_datetime'   => $this->end_datetime instanceof \Carbon\Carbon
+                ? $this->end_datetime->toDateTimeString()
+                : $this->end_datetime,
             'status'         => $this->status,
             'color'          => $this->color,
+            'is_recurring'   => $this->is_recurring ?? false,
+            'recurrence_id'  => $this->recurrence_id,
+            'original_date'  => $this->original_date,
             'gcal_event_id'  => $this->gcal_event_id,
             'creator'        => $this->whenLoaded(
                 'creator',
@@ -79,7 +88,9 @@ class EventResource extends JsonResource
                 fn() =>
                 SetlistResource::collection($this->setlists)
             ),
-            'created_at'     => $this->created_at->toDateTimeString(),
+            'created_at'     => $this->created_at instanceof \Carbon\Carbon
+                ? $this->created_at->toDateTimeString()
+                : null,
         ];
     }
 }

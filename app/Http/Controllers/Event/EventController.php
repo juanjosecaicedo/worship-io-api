@@ -9,6 +9,7 @@ use App\Http\Requests\Event\CreateRecurringEventRequest;
 use App\Http\Requests\Event\ListEventsRequest;
 use App\Http\Requests\Event\UpdateOccurrenceRequest;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\EventCollection;
 use App\Services\EventRecurrenceService;
 use App\Models\Event;
 use App\Models\EventRecurrence;
@@ -39,25 +40,50 @@ class EventController extends Controller
      * 
      * @param ListEventsRequest $request
      * @param Group $group
-     * @return JsonResponse
+     * @return EventCollection
      */
-    public function index(ListEventsRequest $request, Group $group): JsonResponse
+    public function index(ListEventsRequest $request, Group $group): EventCollection
     {
         abort_unless($group->hasMember($request->user()->id), 403);
 
-        $from = $request->filled('from')
-            ? Carbon::parse($request->from)->startOfDay()
-            : now()->startOfMonth();
+        $from = now()->startOfMonth();
+        $to = now()->endOfMonth();
 
-        $to = $request->filled('to')
-            ? Carbon::parse($request->to)->endOfDay()
-            : now()->endOfMonth();
+        if ($request->filled('from')) {
+            $from = Carbon::parse($request->from)->startOfDay();
+        }
+        if ($request->filled('to')) {
+            $to = Carbon::parse($request->to)->endOfDay();
+        }
 
-        $events = $this->recurrenceService->getEventsInRange($group->id, $from, $to);
+        // Filters for month and year
+        if ($request->filled('month')) {
+            $from = $from->month($request->month)->startOfMonth();
+            $to = $from->copy()->endOfMonth();
+        }
+        if ($request->filled('year')) {
+            $from = $from->year($request->year);
+            $to = $to->year($request->year);
+        }
 
-        $perPage = $request->input('per_page', 20);
-        $page = $request->input('page', 1);
+        // Filters for upcoming/past
+        if ($request->boolean('upcoming')) {
+            $from = now();
+            $to = now()->addMonths(6); // Default 6 months for upcoming if not specified
+        } elseif ($request->boolean('past')) {
+            $from = now()->subMonths(6);
+            $to = now();
+        }
 
+        $filters = $request->only(['type', 'status']);
+
+        // Obtener eventos (reales y virtuales de recurrencia)
+        $events = $this->recurrenceService->getEventsInRange($group->id, $from, $to, $filters);
+
+        $perPage = $request->integer('per_page', 20);
+        $page = $request->integer('page', 1);
+
+        // Paginación manual ya que getEventsInRange devuelve una Collection, no un Query Builder
         $paginatedEvents = new \Illuminate\Pagination\LengthAwarePaginator(
             $events->forPage($page, $perPage)->values(),
             $events->count(),
@@ -66,15 +92,7 @@ class EventController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return response()->json([
-            'data' => $paginatedEvents->items(),
-            'meta' => [
-                'current_page' => $paginatedEvents->currentPage(),
-                'last_page' => $paginatedEvents->lastPage(),
-                'per_page' => $paginatedEvents->perPage(),
-                'total' => $paginatedEvents->total(),
-            ],
-        ]);
+        return new EventCollection($paginatedEvents);
     }
 
     /**

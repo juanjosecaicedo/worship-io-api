@@ -43,52 +43,72 @@ class EventRecurrenceService
 
 
     /**
-     * Get events for a group in a date range (including recurring).
+     * Get events for a group in a date range (including recurring) with optional filters.
      * @param int $groupId
      * @param Carbon $from
      * @param Carbon $to
+     * @param array $filters
      * @return Collection
      */
-    public function getEventsInRange(int $groupId, Carbon $from, Carbon $to): Collection
+    public function getEventsInRange(int $groupId, Carbon $from, Carbon $to, array $filters = []): Collection
     {
         // Regular events (not templates) in the range
-        $regular = Event::where('group_id', $groupId)
+        $regularQuery = Event::where('group_id', $groupId)
             ->where('is_template', false)
             ->whereBetween('start_datetime', [$from, $to])
-            ->with(['roles.user', 'attendees'])
-            ->get();
+            ->with(['roles.user', 'attendees']);
+
+        // Apply filters
+        if (isset($filters['type'])) {
+            $regularQuery->where('type', $filters['type']);
+        }
+        if (isset($filters['status'])) {
+            $regularQuery->where('status', $filters['status']);
+        }
+
+        $regular = $regularQuery->get();
 
         // Generate occurrences of recurring events
-        $templates   = Event::where('group_id', $groupId)
+        $templatesQuery = Event::where('group_id', $groupId)
             ->where('is_template', true)
-            ->with(['recurrence.exceptions.event'])
-            ->get();
+            ->with(['recurrence.exceptions.event']);
 
+        // Apply filters to templates too (so occurrences inherit them)
+        if (isset($filters['type'])) {
+            $templatesQuery->where('type', $filters['type']);
+        }
+
+        $templates = $templatesQuery->get();
         $occurrences = collect();
 
         foreach ($templates as $template) {
-            if (! $template->recurrence) continue;
+            if (!$template->recurrence) continue;
 
             $generated = $template->recurrence->generateOccurrences($from, $to);
 
             foreach ($generated as $occ) {
-                // If it's already materialized, show it as a real event
+                // If it's already materialized, show it as a real event (it's already in $regular)
                 if ($occ['status'] === 'materialized') continue;
 
-                $occurrences->push([
+                $occData = [
                     'id'             => "recurring_{$occ['recurrence_id']}_{$occ['original_date']}",
                     'title'          => $occ['event']->title,
                     'type'           => $occ['event']->type,
                     'location'       => $occ['event']->location,
                     'start_datetime' => $occ['start_datetime'],
                     'end_datetime'   => $occ['end_datetime'],
-                    'status'         => $occ['status'] === 'modified' ? 'scheduled' : 'scheduled',
+                    'status'         => 'scheduled',
                     'is_recurring'   => true,
                     'recurrence_id'  => $occ['recurrence_id'],
                     'original_date'  => $occ['original_date'],
                     'color'          => $occ['event']->color,
                     'group_id'       => $groupId,
-                ]);
+                ];
+
+                // Additional filtering for non-query fields
+                if (isset($filters['status']) && $occData['status'] !== $filters['status']) continue;
+
+                $occurrences->push($occData);
             }
         }
 

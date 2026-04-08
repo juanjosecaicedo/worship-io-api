@@ -56,11 +56,13 @@ class ListEventsRequest extends FormRequest
 
             /**
              * If true, filters for upcoming events only.
+             * @example 1
              */
             'upcoming' => 'nullable|boolean',
 
             /**
              * If true, filters for past events only.
+             * @example 1
              */
             'past' => 'nullable|boolean',
 
