@@ -9,7 +9,6 @@ use App\Http\Requests\Event\CreateRecurringEventRequest;
 use App\Http\Requests\Event\ListEventsRequest;
 use App\Http\Requests\Event\UpdateOccurrenceRequest;
 use App\Http\Resources\EventResource;
-use App\Http\Resources\EventCollection;
 use App\Services\EventRecurrenceService;
 use App\Models\Event;
 use App\Models\EventRecurrence;
@@ -27,22 +26,11 @@ class EventController extends Controller
     /**
      * List all events of a group
      * 
-     * @queryParam from date The start date to filter events. Example: 2026-01-01
-     * @queryParam to date The end date to filter events. Example: 2026-12-31
-     * @queryParam type string Filter by event type.
-     * @queryParam status string Filter by event status.
-     * @queryParam month integer Filter by specific month (1-12).
-     * @queryParam year integer Filter by specific year.
-     * @queryParam upcoming boolean Show only upcoming events.
-     * @queryParam past boolean Show only past events.
-     * @queryParam per_page integer Number of items per page.
-     * @queryParam page integer The number of the page to return.
-     * 
      * @param ListEventsRequest $request
      * @param Group $group
-     * @return EventCollection
+     * @return \Illuminate\Http\Resources\JsonApi\AnonymousResourceCollection
      */
-    public function index(ListEventsRequest $request, Group $group): EventCollection
+    public function index(ListEventsRequest $request, Group $group): \Illuminate\Http\Resources\JsonApi\AnonymousResourceCollection
     {
         abort_unless($group->hasMember($request->user()->id), 403);
 
@@ -92,7 +80,7 @@ class EventController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return new EventCollection($paginatedEvents);
+        return EventResource::collection($paginatedEvents);
     }
 
     /**

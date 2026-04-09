@@ -22,6 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.subscription.feature' => \App\Http\Middleware\CheckSubscriptionFeature::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->shouldRenderJsonWhen(function ($request, $e) {
+            if ($request->is('api/*')) {
+                return true;
+            }
+
+            return $request->expectsJson();
+        });
     })->create();

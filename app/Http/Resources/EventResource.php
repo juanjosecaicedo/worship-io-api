@@ -7,17 +7,30 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 
 
-class EventResource extends JsonResource
+class EventResource extends JsonApiResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * Get the resource's ID.
      */
-    public function toArray(Request $request): array
+    public function toId(Request $request): string
+    {
+        return (string) $this->id;
+    }
+
+    /**
+     * Get the resource's type.
+     */
+    public function toType(Request $request): string
+    {
+        return 'events';
+    }
+
+    /**
+     * Transform the resource into an array of attributes.
+     */
+    public function toAttributes(Request $request): array
     {
         return [
-            'id'             => $this->id,
             'title'          => $this->title,
             'type'           => $this->type,
             'description'    => $this->description,
@@ -34,63 +47,27 @@ class EventResource extends JsonResource
             'recurrence_id'  => $this->recurrence_id,
             'original_date'  => $this->original_date,
             'gcal_event_id'  => $this->gcal_event_id,
-            'creator'        => $this->whenLoaded(
-                'creator',
-                fn() =>
-                new UserResource($this->creator)
-            ),
-            // Roles agrupados por tipo
-            'band_director'  => $this->whenLoaded(
-                'roles',
-                fn() =>
-                $this->roles
-                    ->where('role', 'band_director')
-                    ->map(fn($r) => new EventRoleResource($r))
-                    ->values()
-                    ->first()
-            ),
-            'vocalists'      => $this->whenLoaded(
-                'roles',
-                fn() =>
-                EventRoleResource::collection(
-                    $this->roles->where('role', 'vocalist')->values()
-                )
-            ),
-            'choir'          => $this->whenLoaded(
-                'roles',
-                fn() =>
-                EventRoleResource::collection(
-                    $this->roles->where('role', 'choir')->values()
-                )
-            ),
-            'musicians'      => $this->whenLoaded(
-                'roles',
-                fn() =>
-                EventRoleResource::collection(
-                    $this->roles->where('role', 'musician')->values()
-                )
-            ),
-            'technicians'    => $this->whenLoaded(
-                'roles',
-                fn() =>
-                EventRoleResource::collection(
-                    $this->roles->where('role', 'technician')->values()
-                )
-            ),
-            'attendees'      => $this->whenLoaded(
-                'attendees',
-                fn() =>
-                EventAttendeeResource::collection($this->attendees)
-            ),
-            'attendees_count' => $this->whenCounted('attendees'),
-            'setlists'       => $this->whenLoaded(
-                'setlists',
-                fn() =>
-                SetlistResource::collection($this->setlists)
-            ),
             'created_at'     => $this->created_at instanceof \Carbon\Carbon
                 ? $this->created_at->toDateTimeString()
                 : null,
+        ];
+    }
+
+    /**
+     * Get the resource's relationships.
+     */
+    public function toRelationships(Request $request): array
+    {
+        return [
+            'creator'        => UserResource::class,
+            // Roles agrupados por tipo
+            /*'band_director'  => $this->roles->where('role', 'band_director')->first(),
+            'vocalists'      => $this->roles->where('role', 'vocalist')->values(),
+            'choir'          => $this->roles->where('role', 'choir')->values(),
+            'musicians'      => $this->roles->where('role', 'musician')->values(),
+            'technicians'    => $this->roles->where('role', 'technician')->values(),*/
+            'attendees'      => EventAttendeeResource::class,
+            'setlists'       => SetlistResource::class,
         ];
     }
 }

@@ -25,7 +25,7 @@ class VerifyCodeRequest extends FormRequest
         return [
             /**
              * The user's email address.
-             * @example [EMAIL_ADDRESS]
+             * @example john@example.com
              */
             'email' => ['required', 'email', 'exists:users,email'],
 

@@ -34,4 +34,5 @@ return [
     'code_required' => 'El código es obligatorio.',
     'code_size' => 'El código debe tener 6 dígitos.',
     'email_not_found' => 'El correo electrónico no se encontró.',
+    'password_confirmation_min' => 'La confirmación de la contraseña debe tener al menos 8 caracteres.',
 ];

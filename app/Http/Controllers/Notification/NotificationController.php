@@ -14,8 +14,11 @@ class NotificationController extends Controller
      * List user notifications
      * 
      * Returns a paginated list of notifications for the authenticated user.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\JsonApi\AnonymousResourceCollection
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): \Illuminate\Http\Resources\JsonApi\AnonymousResourceCollection
     {
         $query = Notification::forUser($request->user()->id)
             ->orderByDesc('created_at');
@@ -25,34 +28,33 @@ class NotificationController extends Controller
             $query->unread();
         }
 
-        $notifications = $query->paginate($request->per_page ?? 20);
+        $notifications = $query->paginate($request->integer('per_page', 20));
 
-        return response()->json([
-            'data' => NotificationResource::collection($notifications),
-            'meta' => [
-                'current_page' => $notifications->currentPage(),
-                'last_page' => $notifications->lastPage(),
-                'total' => $notifications->total(),
-                'unread_count' => Notification::forUser($request->user()->id)
-                    ->unread()
-                    ->count(),
-            ],
-        ]);
+        $unreadCount = Notification::forUser($request->user()->id)
+            ->unread()
+            ->count();
+
+        return NotificationResource::collection($notifications)
+            ->additional(['meta' => [
+                'unread_count' => $unreadCount,
+            ]]);
     }
 
     /**
      * Mark notification as read
+     * 
+     * @param Request $request
+     * @param Notification $notification
+     * @return NotificationResource
      */
-    public function markAsRead(Request $request, Notification $notification): JsonResponse
+    public function markAsRead(Request $request, Notification $notification): NotificationResource
     {
         abort_if($notification->user_id !== $request->user()->id, 403);
 
         $notification->markAsRead();
 
-        return response()->json([
-            'message' => __('notifications.marked_read'),
-            'data' => new NotificationResource($notification),
-        ]);
+        return (new NotificationResource($notification))
+            ->additional(['message' => __('notifications.marked_read')]);
     }
 
     /**

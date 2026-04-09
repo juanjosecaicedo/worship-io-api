@@ -33,4 +33,5 @@ return [
     'code_required' => 'The code is required.',
     'code_size' => 'The code must be 6 digits.',
     'email_not_found' => 'The email was not found.',
+    'password_confirmation_min' => 'The password confirmation must be at least 8 characters.',
 ];
